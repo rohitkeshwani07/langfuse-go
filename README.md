@@ -544,6 +544,24 @@ params.Page = types.Int(2)
 err = c.Observations.ListIn(ctx, params, &response)
 ```
 
+### GetTree Method
+
+For working with trace trees, the library provides a special `GetTree` method that returns a nested trace structure optimized for performance:
+
+```go
+// Get trace with nested observations as a tree
+tree, err := c.Traces.GetTree(ctx, "trace-123")
+```
+
+**Performance Features:**
+- Returns `CompactTrace` - observations exclude `input` and `output` fields to significantly reduce memory allocation
+- Pre-builds the nested tree structure so you don't have to construct it yourself
+- Uses efficient tree-building algorithm with optimal memory usage
+- Maintains all metadata, costs, usage statistics, and timing information
+- Only the trace-level `input` and `output` are included; observation-level payloads are excluded
+
+This is ideal when you need to visualize or analyze the trace hierarchy without requiring the full input/output payloads for each observation, resulting in substantial performance gains for large traces.
+
 **Benefits:**
 - Reduced memory allocations in hot paths
 - Lower garbage collection pressure
