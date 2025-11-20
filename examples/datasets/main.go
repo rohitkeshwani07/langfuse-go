@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/langfuse/langfuse-go/client"
+	"github.com/langfuse/langfuse-go/datasets"
+	"github.com/langfuse/langfuse-go/types"
 )
 
 func main() {
@@ -20,15 +22,15 @@ func main() {
 	}
 
 	// Initialize the Langfuse client
-	c := client.NewClient(publicKey, secretKey)
+	c := client.New(publicKey, secretKey)
 
 	ctx := context.Background()
 
 	// Create a dataset
 	datasetName := "example-dataset-" + fmt.Sprint(time.Now().Unix())
-	dataset, err := c.CreateDataset(ctx, &client.CreateDatasetRequest{
+	dataset, err := c.Datasets.Create(ctx, &datasets.CreateRequest{
 		Name:        datasetName,
-		Description: client.String("Example evaluation dataset"),
+		Description: types.String("Example evaluation dataset"),
 		Metadata: map[string]interface{}{
 			"created_by": "example",
 		},
@@ -49,8 +51,8 @@ func main() {
 	}
 
 	for i, q := range questions {
-		item, err := c.CreateDatasetItem(ctx, &client.CreateDatasetItemRequest{
-			DatasetName: client.String(datasetName),
+		item, err := c.Datasets.CreateItem(ctx, &datasets.CreateItemRequest{
+			DatasetName: types.String(datasetName),
 			Input: map[string]interface{}{
 				"question": q.input,
 			},
@@ -69,10 +71,10 @@ func main() {
 
 	// Create a dataset run
 	runName := "example-run-" + fmt.Sprint(time.Now().Unix())
-	run, err := c.CreateDatasetRun(ctx, &client.CreateDatasetRunRequest{
+	run, err := c.Datasets.CreateRun(ctx, &datasets.CreateRunRequest{
 		Name:        runName,
 		DatasetID:   dataset.ID,
-		Description: client.String("Example evaluation run"),
+		Description: types.String("Example evaluation run"),
 		Metadata: map[string]interface{}{
 			"model": "gpt-4",
 		},
@@ -83,9 +85,9 @@ func main() {
 	fmt.Printf("Created dataset run: %s (ID: %s)\n", run.Name, run.ID)
 
 	// List dataset items
-	items, err := c.GetDatasetItems(ctx, datasetName, &client.PaginationParams{
-		Page:  client.Int(1),
-		Limit: client.Int(10),
+	items, err := c.Datasets.ListItems(ctx, datasetName, &types.PaginationParams{
+		Page:  types.Int(1),
+		Limit: types.Int(10),
 	})
 	if err != nil {
 		log.Fatalf("Failed to get dataset items: %v", err)
@@ -97,16 +99,16 @@ func main() {
 	}
 
 	// List datasets
-	datasets, err := c.GetDatasets(ctx, &client.PaginationParams{
-		Page:  client.Int(1),
-		Limit: client.Int(10),
+	datasetsResp, err := c.Datasets.List(ctx, &types.PaginationParams{
+		Page:  types.Int(1),
+		Limit: types.Int(10),
 	})
 	if err != nil {
 		log.Fatalf("Failed to get datasets: %v", err)
 	}
 
-	fmt.Printf("\nAll datasets (%d total):\n", datasets.Meta.TotalItems)
-	for _, ds := range datasets.Data {
+	fmt.Printf("\nAll datasets (%d total):\n", datasetsResp.Meta.TotalItems)
+	for _, ds := range datasetsResp.Data {
 		fmt.Printf("  - %s (ID: %s)\n", ds.Name, ds.ID)
 	}
 

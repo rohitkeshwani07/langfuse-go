@@ -8,6 +8,10 @@ import (
 	"time"
 
 	"github.com/langfuse/langfuse-go/client"
+	"github.com/langfuse/langfuse-go/observations"
+	"github.com/langfuse/langfuse-go/scores"
+	"github.com/langfuse/langfuse-go/traces"
+	"github.com/langfuse/langfuse-go/types"
 )
 
 func main() {
@@ -20,7 +24,7 @@ func main() {
 	}
 
 	// Initialize the Langfuse client
-	c := client.NewClient(publicKey, secretKey)
+	c := client.New(publicKey, secretKey)
 
 	ctx := context.Background()
 
@@ -33,10 +37,10 @@ func main() {
 
 	// Create a trace
 	traceID := "example-trace-" + fmt.Sprint(time.Now().Unix())
-	err = c.CreateTrace(ctx, &client.CreateTraceBody{
-		ID:     client.String(traceID),
-		Name:   client.String("example-trace"),
-		UserID: client.String("user-123"),
+	err = c.Traces.Create(ctx, &traces.CreateTraceRequest{
+		ID:     types.String(traceID),
+		Name:   types.String("example-trace"),
+		UserID: types.String("user-123"),
 		Input: map[string]interface{}{
 			"query": "What is Langfuse?",
 		},
@@ -51,11 +55,11 @@ func main() {
 
 	// Create a generation
 	generationID := "example-gen-" + fmt.Sprint(time.Now().Unix())
-	err = c.CreateGeneration(ctx, &client.CreateGenerationBody{
-		ID:      client.String(generationID),
-		TraceID: client.String(traceID),
-		Name:    client.String("gpt-4-completion"),
-		Model:   client.String("gpt-4"),
+	err = c.Observations.CreateGeneration(ctx, &observations.CreateGenerationRequest{
+		ID:      types.String(generationID),
+		TraceID: types.String(traceID),
+		Name:    types.String("gpt-4-completion"),
+		Model:   types.String("gpt-4"),
 		Input: []map[string]interface{}{
 			{
 				"role":    "user",
@@ -66,10 +70,10 @@ func main() {
 			"role":    "assistant",
 			"content": "Langfuse is an open source LLM engineering platform.",
 		},
-		Usage: &client.Usage{
-			PromptTokens:     client.Int(15),
-			CompletionTokens: client.Int(25),
-			TotalTokens:      client.Int(40),
+		Usage: &types.Usage{
+			PromptTokens:     types.Int(15),
+			CompletionTokens: types.Int(25),
+			TotalTokens:      types.Int(40),
 		},
 		ModelParameters: map[string]interface{}{
 			"temperature": 0.7,
@@ -82,11 +86,11 @@ func main() {
 	fmt.Printf("Created generation: %s\n", generationID)
 
 	// Create a score
-	scoreResp, err := c.CreateScore(ctx, &client.CreateScoreRequest{
+	scoreResp, err := c.Scores.Create(ctx, &scores.CreateRequest{
 		Name:    "accuracy",
 		Value:   0.95,
 		TraceID: traceID,
-		Comment: client.String("High quality response"),
+		Comment: types.String("High quality response"),
 	})
 	if err != nil {
 		log.Fatalf("Failed to create score: %v", err)
@@ -97,22 +101,22 @@ func main() {
 	time.Sleep(2 * time.Second)
 
 	// Get the trace
-	trace, err := c.GetTrace(ctx, traceID)
+	trace, err := c.Traces.Get(ctx, traceID)
 	if err != nil {
 		log.Fatalf("Failed to get trace: %v", err)
 	}
 	fmt.Printf("Retrieved trace: %s (Name: %s)\n", trace.ID, *trace.Name)
 
 	// Get scores for the trace
-	scores, err := c.GetScores(ctx, &client.GetScoresParams{
-		TraceID: client.String(traceID),
-		Limit:   client.Int(10),
+	scoresResp, err := c.Scores.List(ctx, &scores.ListParams{
+		TraceID: types.String(traceID),
+		Limit:   types.Int(10),
 	})
 	if err != nil {
 		log.Fatalf("Failed to get scores: %v", err)
 	}
-	fmt.Printf("Found %d scores for trace\n", len(scores.Data))
-	for _, score := range scores.Data {
+	fmt.Printf("Found %d scores for trace\n", len(scoresResp.Data))
+	for _, score := range scoresResp.Data {
 		fmt.Printf("  - %s: %v\n", score.Name, score.Value)
 	}
 

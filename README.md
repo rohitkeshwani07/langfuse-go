@@ -5,6 +5,15 @@
 
 Official Go client library for [Langfuse](https://langfuse.com) - the open source LLM engineering platform.
 
+## Features
+
+- 🎯 **Modular Architecture**: Organized into domain-specific packages for better code organization
+- 🔒 **Type-Safe**: Full type safety with comprehensive struct definitions
+- 🚀 **Complete API Coverage**: All Langfuse API endpoints supported
+- 📦 **Easy to Use**: Simple, intuitive API with sensible defaults
+- 🔄 **Context Support**: Full support for context-based cancellation and timeouts
+- 🛠️ **Flexible Configuration**: Customizable HTTP client, base URL, and timeouts
+
 ## Installation
 
 ```bash
@@ -18,33 +27,52 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/langfuse/langfuse-go/client"
+	"github.com/langfuse/langfuse-go/traces"
+	"github.com/langfuse/langfuse-go/types"
 )
 
 func main() {
 	// Initialize the client
-	c := client.NewClient(
+	c := client.New(
 		"your-public-key",
 		"your-secret-key",
 	)
 
 	// Create a trace
 	ctx := context.Background()
-	err := c.CreateTrace(ctx, &client.CreateTraceBody{
-		Name:   client.String("my-trace"),
-		UserID: client.String("user-123"),
+	err := c.Traces.Create(ctx, &traces.CreateTraceRequest{
+		Name:   types.String("my-trace"),
+		UserID: types.String("user-123"),
 		Input:  map[string]interface{}{"query": "What is Langfuse?"},
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println("Trace created successfully!")
 }
 ```
+
+## Package Structure
+
+The library is organized into modular packages:
+
+- **`client`** - Main client combining all sub-clients
+- **`core`** - Base HTTP client and shared utilities
+- **`types`** - Shared types, enums, and helper functions
+- **`traces`** - Trace management
+- **`observations`** - Events, spans, and generations
+- **`scores`** - Score operations
+- **`datasets`** - Dataset management
+- **`sessions`** - Session operations
+- **`models`** - Model configuration
+- **`prompts`** - Prompt management
+- **`comments`** - Comment operations
+- **`media`** - Media handling
+- **`metrics`** - Metrics and analytics
+- **`annotations`** - Annotation queues
+- **`ingestion`** - Batch ingestion
 
 ## Configuration
 
@@ -53,10 +81,12 @@ func main() {
 For self-hosted instances:
 
 ```go
-c := client.NewClient(
+import "github.com/langfuse/langfuse-go/core"
+
+c := client.New(
 	"your-public-key",
 	"your-secret-key",
-	client.WithBaseURL("https://your-instance.com"),
+	core.WithBaseURL("https://your-instance.com"),
 )
 ```
 
@@ -72,20 +102,20 @@ httpClient := &http.Client{
 	Timeout: 60 * time.Second,
 }
 
-c := client.NewClient(
+c := client.New(
 	"your-public-key",
 	"your-secret-key",
-	client.WithHTTPClient(httpClient),
+	core.WithHTTPClient(httpClient),
 )
 ```
 
 ### Custom Timeout
 
 ```go
-c := client.NewClient(
+c := client.New(
 	"your-public-key",
 	"your-secret-key",
-	client.WithTimeout(60 * time.Second),
+	core.WithTimeout(60 * time.Second),
 )
 ```
 
@@ -93,377 +123,308 @@ c := client.NewClient(
 
 ### Traces
 
-#### Create a Trace
-
 ```go
-err := c.CreateTrace(ctx, &client.CreateTraceBody{
-	ID:        client.String("trace-123"),
-	Name:      client.String("my-llm-app"),
-	UserID:    client.String("user-456"),
-	SessionID: client.String("session-789"),
+import (
+	"github.com/langfuse/langfuse-go/traces"
+	"github.com/langfuse/langfuse-go/types"
+)
+
+// Create a trace
+err := c.Traces.Create(ctx, &traces.CreateTraceRequest{
+	ID:        types.String("trace-123"),
+	Name:      types.String("my-llm-app"),
+	UserID:    types.String("user-456"),
+	SessionID: types.String("session-789"),
 	Metadata: map[string]interface{}{
 		"environment": "production",
-		"version":     "1.0.0",
 	},
-	Tags:   []string{"production", "important"},
-	Input:  map[string]interface{}{"query": "What is Langfuse?"},
-	Output: map[string]interface{}{"response": "Langfuse is an LLM engineering platform"},
+	Tags: []string{"production", "important"},
 })
-```
 
-#### Get a Trace
+// Get a trace
+trace, err := c.Traces.Get(ctx, "trace-123")
 
-```go
-trace, err := c.GetTrace(ctx, "trace-123")
-if err != nil {
-	log.Fatal(err)
-}
-fmt.Printf("Trace: %+v\n", trace)
-```
-
-#### Update a Trace
-
-```go
-err := c.UpdateTrace(ctx, "trace-123", &client.UpdateTraceBody{
-	Name:   client.String("updated-name"),
-	Public: client.Bool(true),
-	Output: map[string]interface{}{"response": "Updated response"},
+// Update a trace
+err = c.Traces.Update(ctx, "trace-123", &traces.UpdateTraceRequest{
+	Name:   types.String("updated-name"),
+	Public: types.Bool(true),
 })
 ```
 
 ### Observations
 
-#### Create a Generation
-
 ```go
-err := c.CreateGeneration(ctx, &client.CreateGenerationBody{
-	ID:      client.String("gen-123"),
-	TraceID: client.String("trace-123"),
-	Name:    client.String("openai-completion"),
-	Model:   client.String("gpt-4"),
+import (
+	"github.com/langfuse/langfuse-go/observations"
+	"github.com/langfuse/langfuse-go/types"
+)
+
+// Create a generation
+err := c.Observations.CreateGeneration(ctx, &observations.CreateGenerationRequest{
+	ID:      types.String("gen-123"),
+	TraceID: types.String("trace-123"),
+	Name:    types.String("openai-completion"),
+	Model:   types.String("gpt-4"),
 	Input: []map[string]interface{}{
 		{"role": "user", "content": "What is Langfuse?"},
 	},
-	Output: map[string]interface{}{
-		"role":    "assistant",
-		"content": "Langfuse is an LLM engineering platform",
-	},
-	Usage: &client.Usage{
-		PromptTokens:     client.Int(10),
-		CompletionTokens: client.Int(20),
-		TotalTokens:      client.Int(30),
-	},
-	ModelParameters: map[string]interface{}{
-		"temperature": 0.7,
-		"max_tokens":  100,
+	Usage: &types.Usage{
+		PromptTokens:     types.Int(10),
+		CompletionTokens: types.Int(20),
+		TotalTokens:      types.Int(30),
 	},
 })
-```
 
-#### Create a Span
-
-```go
-import "time"
-
-err := c.CreateSpan(ctx, &client.CreateSpanBody{
-	ID:                  client.String("span-123"),
-	TraceID:             client.String("trace-123"),
-	ParentObservationID: client.String("parent-span-456"),
-	Name:                client.String("database-query"),
-	StartTime:           client.Time(time.Now()),
-	EndTime:             client.Time(time.Now().Add(100 * time.Millisecond)),
-	Input: map[string]interface{}{
-		"query": "SELECT * FROM users WHERE id = ?",
-		"params": []interface{}{123},
-	},
-	Output: map[string]interface{}{
-		"rows": 1,
-	},
-	Metadata: map[string]interface{}{
-		"database": "postgres",
-	},
+// Create a span
+err = c.Observations.CreateSpan(ctx, &observations.CreateSpanRequest{
+	ID:      types.String("span-123"),
+	TraceID: types.String("trace-123"),
+	Name:    types.String("database-query"),
 })
-```
 
-#### Create an Event
-
-```go
-err := c.CreateEvent(ctx, &client.CreateEventBody{
-	ID:      client.String("event-123"),
-	TraceID: client.String("trace-123"),
-	Name:    client.String("user-feedback"),
-	Input: map[string]interface{}{
-		"rating":  5,
-		"comment": "Great response!",
-	},
-	Level: (*client.ObservationLevel)(client.String("DEFAULT")),
+// Create an event
+err = c.Observations.CreateEvent(ctx, &observations.CreateEventRequest{
+	ID:      types.String("event-123"),
+	TraceID: types.String("trace-123"),
+	Name:    types.String("user-feedback"),
 })
-```
 
-#### Get Observations
-
-```go
-observations, err := c.GetObservations(ctx, &client.GetObservationsParams{
-	Page:    client.Int(1),
-	Limit:   client.Int(50),
-	TraceID: client.String("trace-123"),
+// List observations
+obs, err := c.Observations.List(ctx, &observations.ListParams{
+	TraceID: types.String("trace-123"),
+	Limit:   types.Int(50),
 })
-if err != nil {
-	log.Fatal(err)
-}
-
-for _, obs := range observations.Data {
-	fmt.Printf("Observation: %s (Type: %s)\n", obs.ID, obs.Type)
-}
 ```
 
 ### Scores
 
-#### Create a Score
-
 ```go
-// Numeric score
-score, err := c.CreateScore(ctx, &client.CreateScoreRequest{
+import (
+	"github.com/langfuse/langfuse-go/scores"
+	"github.com/langfuse/langfuse-go/types"
+)
+
+// Create a numeric score
+scoreResp, err := c.Scores.Create(ctx, &scores.CreateRequest{
 	Name:    "accuracy",
 	Value:   0.95,
 	TraceID: "trace-123",
-	Comment: client.String("High accuracy response"),
+	Comment: types.String("High accuracy response"),
 })
 
-// Categorical score
-score, err := c.CreateScore(ctx, &client.CreateScoreRequest{
-	Name:     "sentiment",
-	Value:    "positive",
-	DataType: (*client.ScoreDataType)(client.String("CATEGORICAL")),
-	TraceID:  "trace-123",
+// Get a score
+score, err := c.Scores.Get(ctx, "score-123")
+
+// List scores
+scores, err := c.Scores.List(ctx, &scores.ListParams{
+	TraceID: types.String("trace-123"),
+	Limit:   types.Int(50),
 })
 
-// Boolean score
-score, err := c.CreateScore(ctx, &client.CreateScoreRequest{
-	Name:     "is_correct",
-	Value:    true,
-	DataType: (*client.ScoreDataType)(client.String("BOOLEAN")),
-	TraceID:  "trace-123",
-})
-```
-
-#### Get Scores
-
-```go
-scores, err := c.GetScores(ctx, &client.GetScoresParams{
-	Page:    client.Int(1),
-	Limit:   client.Int(50),
-	TraceID: client.String("trace-123"),
-})
-if err != nil {
-	log.Fatal(err)
-}
-
-for _, score := range scores.Data {
-	fmt.Printf("Score: %s = %v\n", score.Name, score.Value)
-}
+// Delete a score
+err = c.Scores.Delete(ctx, "score-123")
 ```
 
 ### Datasets
 
-#### Create a Dataset
-
 ```go
-dataset, err := c.CreateDataset(ctx, &client.CreateDatasetRequest{
+import (
+	"github.com/langfuse/langfuse-go/datasets"
+	"github.com/langfuse/langfuse-go/types"
+)
+
+// Create a dataset
+dataset, err := c.Datasets.Create(ctx, &datasets.CreateRequest{
 	Name:        "my-eval-dataset",
-	Description: client.String("Evaluation dataset for my LLM app"),
-	Metadata: map[string]interface{}{
-		"purpose": "testing",
-	},
+	Description: types.String("Evaluation dataset"),
 })
-```
 
-#### Create Dataset Items
-
-```go
-item, err := c.CreateDatasetItem(ctx, &client.CreateDatasetItemRequest{
-	DatasetName: client.String("my-eval-dataset"),
+// Create dataset items
+item, err := c.Datasets.CreateItem(ctx, &datasets.CreateItemRequest{
+	DatasetName: types.String("my-eval-dataset"),
 	Input: map[string]interface{}{
 		"query": "What is the capital of France?",
 	},
 	ExpectedOutput: map[string]interface{}{
 		"answer": "Paris",
 	},
-	Metadata: map[string]interface{}{
-		"category": "geography",
-	},
 })
-```
 
-#### Create Dataset Runs
-
-```go
-run, err := c.CreateDatasetRun(ctx, &client.CreateDatasetRunRequest{
-	Name:        "run-2024-01-15",
-	DatasetID:   "dataset-123",
-	Description: client.String("Evaluation run for GPT-4"),
-	Metadata: map[string]interface{}{
-		"model": "gpt-4",
-	},
+// Create a dataset run
+run, err := c.Datasets.CreateRun(ctx, &datasets.CreateRunRequest{
+	Name:      "run-2024-01-15",
+	DatasetID: "dataset-123",
 })
-```
 
-#### Link Traces to Dataset Runs
-
-```go
-runItem, err := c.CreateDatasetRunItem(ctx, &client.CreateDatasetRunItemRequest{
+// Link trace to dataset run
+runItem, err := c.Datasets.CreateRunItem(ctx, &datasets.CreateRunItemRequest{
 	RunName:       "run-2024-01-15",
 	DatasetItemID: "item-123",
 	TraceID:       "trace-123",
-	Metadata: map[string]interface{}{
-		"runtime_ms": 250,
-	},
+})
+
+// List datasets
+datasets, err := c.Datasets.List(ctx, &types.PaginationParams{
+	Page:  types.Int(1),
+	Limit: types.Int(50),
 })
 ```
 
 ### Sessions
 
-#### Get a Session
-
 ```go
-session, err := c.GetSession(ctx, "session-123")
-if err != nil {
-	log.Fatal(err)
-}
+import "github.com/langfuse/langfuse-go/types"
 
-fmt.Printf("Session has %d traces\n", len(session.Traces))
-```
+// Get a session with traces
+session, err := c.Sessions.Get(ctx, "session-123")
 
-#### List Sessions
-
-```go
-sessions, err := c.GetSessions(ctx, &client.PaginationParams{
-	Page:  client.Int(1),
-	Limit: client.Int(50),
+// List sessions
+sessions, err := c.Sessions.List(ctx, &types.PaginationParams{
+	Page:  types.Int(1),
+	Limit: types.Int(50),
 })
 ```
 
 ### Models
 
-#### Create Model Configuration
-
 ```go
-model, err := c.CreateModel(ctx, &client.CreateModelRequest{
+import (
+	"github.com/langfuse/langfuse-go/models"
+	"github.com/langfuse/langfuse-go/types"
+)
+
+// Create model configuration
+model, err := c.Models.Create(ctx, &models.CreateRequest{
 	ModelName:    "gpt-4-custom",
 	MatchPattern: "gpt-4*",
-	InputPrice:   client.Float64(0.03),
-	OutputPrice:  client.Float64(0.06),
-	Unit:         (*client.ModelUsageUnit)(client.String("TOKENS")),
+	InputPrice:   types.Float64(0.03),
+	OutputPrice:  types.Float64(0.06),
+	Unit:         (*types.ModelUsageUnit)(types.String("TOKENS")),
 })
-```
 
-#### List Models
+// Get model
+model, err := c.Models.Get(ctx, "model-123")
 
-```go
-models, err := c.GetModels(ctx, &client.PaginationParams{
-	Page:  client.Int(1),
-	Limit: client.Int(50),
+// List models
+models, err := c.Models.List(ctx, &types.PaginationParams{
+	Page:  types.Int(1),
+	Limit: types.Int(50),
 })
+
+// Delete model
+err = c.Models.Delete(ctx, "model-123")
 ```
 
 ### Prompts
 
-#### Create a Chat Prompt
-
 ```go
-prompt, err := c.CreateChatPrompt(ctx, &client.CreateChatPromptRequest{
+import (
+	"github.com/langfuse/langfuse-go/prompts"
+	"github.com/langfuse/langfuse-go/types"
+)
+
+// Create a chat prompt
+prompt, err := c.Prompts.CreateChat(ctx, &prompts.CreateChatRequest{
 	Name: "customer-support-prompt",
-	Prompt: []client.ChatMessage{
-		{Role: "system", Content: "You are a helpful customer support agent."},
+	Prompt: []prompts.ChatMessage{
+		{Role: "system", Content: "You are a helpful assistant."},
 		{Role: "user", Content: "{{user_question}}"},
 	},
-	Tags:   []string{"production", "customer-support"},
-	Labels: []string{"v1"},
-	Config: map[string]interface{}{
-		"temperature": 0.7,
-		"max_tokens":  500,
-	},
+	Tags: []string{"production"},
 })
-```
 
-#### Create a Text Prompt
-
-```go
-prompt, err := c.CreateTextPrompt(ctx, &client.CreateTextPromptRequest{
+// Create a text prompt
+textPrompt, err := c.Prompts.CreateText(ctx, &prompts.CreateTextRequest{
 	Name:   "completion-prompt",
-	Prompt: "Answer the following question: {{question}}",
-	Tags:   []string{"production"},
-	Config: map[string]interface{}{
-		"temperature": 0.5,
-	},
+	Prompt: "Answer: {{question}}",
 })
-```
 
-#### Get a Prompt
-
-```go
-// Get latest version
-prompt, err := c.GetPrompt(ctx, "customer-support-prompt", nil, nil)
+// Get a prompt (latest version)
+prompt, err := c.Prompts.Get(ctx, "customer-support-prompt", nil)
 
 // Get specific version
-prompt, err := c.GetPrompt(ctx, "customer-support-prompt", client.Int(2), nil)
+prompt, err = c.Prompts.Get(ctx, "customer-support-prompt", &prompts.GetParams{
+	Version: types.Int(2),
+})
 
 // Get by label
-prompt, err := c.GetPrompt(ctx, "customer-support-prompt", nil, client.String("production"))
+prompt, err = c.Prompts.Get(ctx, "customer-support-prompt", &prompts.GetParams{
+	Label: types.String("production"),
+})
+
+// List prompts
+prompts, err := c.Prompts.List(ctx, &prompts.ListParams{
+	Page:  types.Int(1),
+	Limit: types.Int(50),
+	Tag:   types.String("production"),
+})
 ```
 
 ### Comments
 
-#### Create a Comment
-
 ```go
-comment, err := c.CreateComment(ctx, &client.CreateCommentRequest{
+import (
+	"github.com/langfuse/langfuse-go/comments"
+	"github.com/langfuse/langfuse-go/types"
+)
+
+// Create a comment
+comment, err := c.Comments.Create(ctx, &comments.CreateRequest{
 	Content:    "This trace needs review",
-	ObjectType: client.CommentObjectTypeTrace,
+	ObjectType: types.CommentObjectTypeTrace,
 	ObjectID:   "trace-123",
 })
-```
 
-#### Get Comments
+// Get comment
+comment, err := c.Comments.Get(ctx, "comment-123")
 
-```go
-comments, err := c.GetComments(ctx, &client.GetCommentsParams{
-	ObjectType: (*client.CommentObjectType)(client.String("TRACE")),
-	ObjectID:   client.String("trace-123"),
+// List comments
+comments, err := c.Comments.List(ctx, &comments.ListParams{
+	ObjectType: (*types.CommentObjectType)(types.String("TRACE")),
+	ObjectID:   types.String("trace-123"),
 })
 ```
 
 ### Media
 
-#### Upload Media
-
 ```go
+import (
+	"github.com/langfuse/langfuse-go/media"
+	"github.com/langfuse/langfuse-go/types"
+)
+
 // Get upload URL
-uploadResp, err := c.GetMediaUploadURL(ctx, &client.GetMediaUploadUrlRequest{
-	ContentType:   client.MediaContentTypeImagePng,
+uploadResp, err := c.Media.GetUploadURL(ctx, &media.UploadURLRequest{
+	ContentType:   types.MediaContentTypeImagePng,
 	ContentLength: 1024,
-	TraceID:       client.String("trace-123"),
-	Field:         client.String("input"),
+	TraceID:       types.String("trace-123"),
 })
 
 // Upload file to uploadResp.UploadURL using standard HTTP PUT
-// Then associate the media with the trace
-err = c.PatchMedia(ctx, uploadResp.MediaID, &client.PatchMediaBody{
-	TraceID: client.String("trace-123"),
-	Field:   client.String("input"),
+
+// Associate media with trace
+err = c.Media.Patch(ctx, uploadResp.MediaID, &media.PatchRequest{
+	TraceID: types.String("trace-123"),
+	Field:   types.String("input"),
 })
+
+// Get media metadata
+mediaInfo, err := c.Media.Get(ctx, "media-123")
 ```
 
 ### Metrics
 
-#### Get Daily Metrics
-
 ```go
-import "time"
+import (
+	"github.com/langfuse/langfuse-go/metrics"
+	"github.com/langfuse/langfuse-go/types"
+	"time"
+)
 
-metrics, err := c.GetDailyMetrics(ctx, &client.GetDailyMetricsParams{
-	FromTimestamp: client.Time(time.Now().AddDate(0, 0, -7)),
-	ToTimestamp:   client.Time(time.Now()),
+// Get daily metrics
+metrics, err := c.Metrics.GetDaily(ctx, &metrics.DailyParams{
+	FromTimestamp: types.Time(time.Now().AddDate(0, 0, -7)),
+	ToTimestamp:   types.Time(time.Now()),
 	Tags:          []string{"production"},
 })
 
@@ -475,55 +436,96 @@ for _, metric := range metrics {
 
 ### Annotation Queues
 
-#### Create an Annotation Queue
-
 ```go
-queue, err := c.CreateAnnotationQueue(ctx, &client.CreateAnnotationQueueRequest{
+import (
+	"github.com/langfuse/langfuse-go/annotations"
+	"github.com/langfuse/langfuse-go/types"
+)
+
+// Create annotation queue
+queue, err := c.Annotations.CreateQueue(ctx, &annotations.CreateQueueRequest{
 	Name:           "manual-review-queue",
-	Description:    client.String("Queue for traces requiring manual review"),
+	Description:    types.String("Queue for manual review"),
 	ScoreConfigIDs: []string{"config-1", "config-2"},
 })
-```
 
-#### Add Items to Queue
-
-```go
-item, err := c.CreateAnnotationQueueItem(ctx, "queue-123", &client.CreateAnnotationQueueItemRequest{
+// Add item to queue
+item, err := c.Annotations.CreateQueueItem(ctx, "queue-123", &annotations.CreateQueueItemRequest{
 	ObjectID:   "trace-123",
-	ObjectType: client.AnnotationQueueObjectTypeTrace,
+	ObjectType: types.AnnotationQueueObjectTypeTrace,
 })
-```
 
-#### Update Queue Item Status
-
-```go
-status := client.AnnotationQueueStatusCompleted
-item, err := c.UpdateAnnotationQueueItem(ctx, "queue-123", "item-123", &client.UpdateAnnotationQueueItemRequest{
+// Update item status
+status := types.AnnotationQueueStatusCompleted
+item, err = c.Annotations.UpdateQueueItem(ctx, "queue-123", "item-123", &annotations.UpdateQueueItemRequest{
 	Status: &status,
 })
+
+// List queues
+queues, err := c.Annotations.ListQueues(ctx, &types.PaginationParams{
+	Page:  types.Int(1),
+	Limit: types.Int(50),
+})
+
+// List queue items
+items, err := c.Annotations.ListQueueItems(ctx, "queue-123", &annotations.ListQueueItemsParams{
+	Status: &types.AnnotationQueueStatusPending,
+})
+```
+
+### Batch Ingestion
+
+```go
+import "github.com/langfuse/langfuse-go/ingestion"
+
+// Send batch of events
+response, err := c.Ingestion.Ingest(ctx, &ingestion.Request{
+	Batch: []interface{}{
+		map[string]interface{}{
+			"type": "trace-create",
+			"body": map[string]interface{}{
+				"id":   "trace-123",
+				"name": "batch-trace",
+			},
+		},
+		map[string]interface{}{
+			"type": "generation-create",
+			"body": map[string]interface{}{
+				"id":      "gen-123",
+				"traceId": "trace-123",
+				"name":    "batch-generation",
+			},
+		},
+	},
+})
+
+fmt.Printf("Successes: %d, Errors: %d\n",
+	len(response.Successes), len(response.Errors))
 ```
 
 ## Helper Functions
 
-The library provides convenient pointer helper functions for optional fields:
+The `types` package provides convenient pointer helper functions:
 
 ```go
+import "github.com/langfuse/langfuse-go/types"
+
 // Primitives
-client.Bool(true)
-client.String("value")
-client.Int(42)
-client.Int64(42)
-client.Float64(3.14)
+types.Bool(true)
+types.String("value")
+types.Int(42)
+types.Int64(42)
+types.Float64(3.14)
 
 // Time
-client.Time(time.Now())
+types.Time(time.Now())
 
 // UUID
-client.UUID(uuid.New())
+types.UUID(uuid.New())
 
 // Dates
-client.MustParseDate("2024-01-15")
-client.MustParseDateTime("2024-01-15T10:30:00Z")
+types.MustParseDate("2024-01-15")
+types.MustParseDateTime("2024-01-15T10:30:00Z")
 ```
 
 ## Error Handling
@@ -531,7 +533,7 @@ client.MustParseDateTime("2024-01-15T10:30:00Z")
 All client methods return errors that should be checked:
 
 ```go
-trace, err := c.GetTrace(ctx, "trace-123")
+trace, err := c.Traces.Get(ctx, "trace-123")
 if err != nil {
 	// Handle error
 	log.Printf("Failed to get trace: %v", err)
@@ -550,10 +552,23 @@ All client methods accept a `context.Context` for cancellation and timeouts:
 ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 defer cancel()
 
-err := c.CreateTrace(ctx, &client.CreateTraceBody{
-	Name: client.String("my-trace"),
+err := c.Traces.Create(ctx, &traces.CreateTraceRequest{
+	Name: types.String("my-trace"),
 })
 ```
+
+## Examples
+
+See the [examples](./examples) directory for complete working examples:
+
+- [basic](./examples/basic) - Basic usage with traces, generations, and scores
+- [datasets](./examples/datasets) - Dataset management and evaluation runs
+
+## Package Documentation
+
+For detailed package documentation, see:
+
+- [pkg.go.dev/github.com/langfuse/langfuse-go](https://pkg.go.dev/github.com/langfuse/langfuse-go)
 
 ## License
 
