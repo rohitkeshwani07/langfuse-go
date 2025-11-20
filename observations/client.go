@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/langfuse/langfuse-go/core"
+	"github.com/rohitkeshwani07/langfuse-go/core"
 )
 
 // Client provides methods for observation operations

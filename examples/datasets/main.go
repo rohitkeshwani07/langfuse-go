@@ -7,9 +7,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/langfuse/langfuse-go/client"
-	"github.com/langfuse/langfuse-go/datasets"
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/client"
+	"github.com/rohitkeshwani07/langfuse-go/datasets"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 func main() {

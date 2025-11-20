@@ -3,7 +3,7 @@ package scores
 import (
 	"time"
 
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Score represents a score for a trace or observation

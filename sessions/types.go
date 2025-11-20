@@ -3,8 +3,8 @@ package sessions
 import (
 	"time"
 
-	"github.com/langfuse/langfuse-go/traces"
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/traces"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Session represents a session

@@ -7,8 +7,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/langfuse/langfuse-go/client"
-	"github.com/langfuse/langfuse-go/core"
+	"github.com/rohitkeshwani07/langfuse-go/client"
+	"github.com/rohitkeshwani07/langfuse-go/core"
 )
 
 func main() {

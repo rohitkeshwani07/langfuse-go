@@ -1,7 +1,7 @@
 # Langfuse Go Client
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/langfuse/langfuse-go.svg)](https://pkg.go.dev/github.com/langfuse/langfuse-go)
-[![Go Report Card](https://goreportcard.com/badge/github.com/langfuse/langfuse-go)](https://goreportcard.com/report/github.com/langfuse/langfuse-go)
+[![Go Reference](https://pkg.go.dev/badge/github.com/rohitkeshwani07/langfuse-go.svg)](https://pkg.go.dev/github.com/rohitkeshwani07/langfuse-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/rohitkeshwani07/langfuse-go)](https://goreportcard.com/report/github.com/rohitkeshwani07/langfuse-go)
 
 Official Go client library for [Langfuse](https://langfuse.com) - the open source LLM engineering platform.
 
@@ -22,7 +22,7 @@ This library implements the Langfuse API based on the [OpenAPI specification](ht
 ## Installation
 
 ```bash
-go get github.com/langfuse/langfuse-go
+go get github.com/rohitkeshwani07/langfuse-go
 ```
 
 ## Quick Start
@@ -34,9 +34,9 @@ import (
 	"context"
 	"log"
 
-	"github.com/langfuse/langfuse-go/client"
-	"github.com/langfuse/langfuse-go/traces"
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/client"
+	"github.com/rohitkeshwani07/langfuse-go/traces"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 func main() {
@@ -86,7 +86,7 @@ The library is organized into modular packages:
 For self-hosted instances:
 
 ```go
-import "github.com/langfuse/langfuse-go/core"
+import "github.com/rohitkeshwani07/langfuse-go/core"
 
 c := client.New(
 	"your-public-key",
@@ -130,8 +130,8 @@ c := client.New(
 
 ```go
 import (
-	"github.com/langfuse/langfuse-go/traces"
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/traces"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Create a trace
@@ -160,8 +160,8 @@ err = c.Traces.Update(ctx, "trace-123", &traces.UpdateTraceRequest{
 
 ```go
 import (
-	"github.com/langfuse/langfuse-go/observations"
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/observations"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Create a generation
@@ -205,8 +205,8 @@ obs, err := c.Observations.List(ctx, &observations.ListParams{
 
 ```go
 import (
-	"github.com/langfuse/langfuse-go/scores"
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/scores"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Create a numeric score
@@ -234,8 +234,8 @@ err = c.Scores.Delete(ctx, "score-123")
 
 ```go
 import (
-	"github.com/langfuse/langfuse-go/datasets"
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/datasets"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Create a dataset
@@ -278,7 +278,7 @@ datasets, err := c.Datasets.List(ctx, &types.PaginationParams{
 ### Sessions
 
 ```go
-import "github.com/langfuse/langfuse-go/types"
+import "github.com/rohitkeshwani07/langfuse-go/types"
 
 // Get a session with traces
 session, err := c.Sessions.Get(ctx, "session-123")
@@ -294,8 +294,8 @@ sessions, err := c.Sessions.List(ctx, &types.PaginationParams{
 
 ```go
 import (
-	"github.com/langfuse/langfuse-go/models"
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/models"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Create model configuration
@@ -324,8 +324,8 @@ err = c.Models.Delete(ctx, "model-123")
 
 ```go
 import (
-	"github.com/langfuse/langfuse-go/prompts"
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/prompts"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Create a chat prompt
@@ -369,8 +369,8 @@ prompts, err := c.Prompts.List(ctx, &prompts.ListParams{
 
 ```go
 import (
-	"github.com/langfuse/langfuse-go/comments"
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/comments"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Create a comment
@@ -394,8 +394,8 @@ comments, err := c.Comments.List(ctx, &comments.ListParams{
 
 ```go
 import (
-	"github.com/langfuse/langfuse-go/media"
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/media"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Get upload URL
@@ -421,8 +421,8 @@ mediaInfo, err := c.Media.Get(ctx, "media-123")
 
 ```go
 import (
-	"github.com/langfuse/langfuse-go/metrics"
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/metrics"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 	"time"
 )
 
@@ -443,8 +443,8 @@ for _, metric := range metrics {
 
 ```go
 import (
-	"github.com/langfuse/langfuse-go/annotations"
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/annotations"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Create annotation queue
@@ -481,7 +481,7 @@ items, err := c.Annotations.ListQueueItems(ctx, "queue-123", &annotations.ListQu
 ### Batch Ingestion
 
 ```go
-import "github.com/langfuse/langfuse-go/ingestion"
+import "github.com/rohitkeshwani07/langfuse-go/ingestion"
 
 // Send batch of events
 response, err := c.Ingestion.Ingest(ctx, &ingestion.Request{
@@ -578,7 +578,7 @@ This is ideal when you need to visualize or analyze the trace hierarchy without 
 The `types` package provides convenient pointer helper functions:
 
 ```go
-import "github.com/langfuse/langfuse-go/types"
+import "github.com/rohitkeshwani07/langfuse-go/types"
 
 // Primitives
 types.Bool(true)
@@ -638,7 +638,7 @@ See the [examples](./examples) directory for complete working examples:
 
 For detailed package documentation, see:
 
-- [pkg.go.dev/github.com/langfuse/langfuse-go](https://pkg.go.dev/github.com/langfuse/langfuse-go)
+- [pkg.go.dev/github.com/rohitkeshwani07/langfuse-go](https://pkg.go.dev/github.com/rohitkeshwani07/langfuse-go)
 
 ## License
 
@@ -646,10 +646,10 @@ MIT
 
 ## Contributing
 
-Contributions are welcome! Please see the [GitHub repository](https://github.com/langfuse/langfuse-go) for more information.
+Contributions are welcome! Please see the [GitHub repository](https://github.com/rohitkeshwani07/langfuse-go) for more information.
 
 ## Support
 
 - [Documentation](https://langfuse.com/docs)
 - [Discord Community](https://discord.gg/langfuse)
-- [GitHub Issues](https://github.com/langfuse/langfuse-go/issues)
+- [GitHub Issues](https://github.com/rohitkeshwani07/langfuse-go/issues)
