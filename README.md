@@ -5,6 +5,8 @@
 
 Official Go client library for [Langfuse](https://langfuse.com) - the open source LLM engineering platform.
 
+This library implements the Langfuse API based on the [OpenAPI specification](https://cloud.langfuse.com/generated/api/openapi.yml).
+
 ## Features
 
 - 🎯 **Modular Architecture**: Organized into domain-specific packages for better code organization
