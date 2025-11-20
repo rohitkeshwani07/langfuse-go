@@ -24,6 +24,13 @@ type Trace struct {
 	UpdatedAt    time.Time                   `json:"updatedAt"`
 	Public       *bool                       `json:"public,omitempty"`
 	ProjectID    string                      `json:"projectId"`
+	Environment  string                      `json:"environment,omitempty"`
+	Bookmarked   bool                        `json:"bookmarked,omitempty"`
+	ExternalID   interface{}                 `json:"externalId,omitempty"`
+	Latency      float64                     `json:"latency,omitempty"`
+	TotalCost    float64                     `json:"totalCost,omitempty"`
+	HtmlPath     string                      `json:"htmlPath,omitempty"`
+	Scores       []interface{}               `json:"scores,omitempty"`
 	Observations []*observations.Observation `json:"observations,omitempty"`
 }
 
