@@ -5,11 +5,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/bytedance/sonic"
 )
 
 const (
@@ -73,7 +74,7 @@ func NewHTTPClient(publicKey, secretKey string, opts ...Option) *HTTPClient {
 func (c *HTTPClient) DoRequest(ctx context.Context, method, path string, body interface{}, result interface{}) error {
 	var reqBody io.Reader
 	if body != nil {
-		jsonData, err := json.Marshal(body)
+		jsonData, err := sonic.Marshal(body)
 		if err != nil {
 			return fmt.Errorf("failed to marshal request body: %w", err)
 		}
@@ -103,7 +104,7 @@ func (c *HTTPClient) DoRequest(ctx context.Context, method, path string, body in
 	}
 
 	if result != nil && resp.StatusCode != http.StatusNoContent {
-		if err := json.NewDecoder(resp.Body).Decode(result); err != nil {
+		if err := sonic.ConfigDefault.NewDecoder(resp.Body).Decode(result); err != nil {
 			return fmt.Errorf("failed to decode response: %w", err)
 		}
 	}

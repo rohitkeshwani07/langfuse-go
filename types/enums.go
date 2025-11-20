@@ -5,6 +5,8 @@ package types
 import (
 	"encoding/json"
 	"fmt"
+
+	"github.com/bytedance/sonic"
 )
 
 // CommentObjectType represents the type of object a comment is attached to.
@@ -258,15 +260,15 @@ var (
 	_ json.Unmarshaler = (*ScoreSource)(nil)
 )
 
-// MarshalJSON implements json.Marshaler
+// MarshalJSON implements sonic.Marshaler
 func (c CommentObjectType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(string(c))
+	return sonic.Marshal(string(c))
 }
 
-// UnmarshalJSON implements json.Unmarshaler
+// UnmarshalJSON implements sonic.Unmarshaler
 func (c *CommentObjectType) UnmarshalJSON(data []byte) error {
 	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
+	if err := sonic.Unmarshal(data, &s); err != nil {
 		return err
 	}
 	val, err := NewCommentObjectTypeFromString(s)
@@ -279,12 +281,12 @@ func (c *CommentObjectType) UnmarshalJSON(data []byte) error {
 
 // Similar implementations for other enums...
 func (d DatasetStatus) MarshalJSON() ([]byte, error) {
-	return json.Marshal(string(d))
+	return sonic.Marshal(string(d))
 }
 
 func (d *DatasetStatus) UnmarshalJSON(data []byte) error {
 	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
+	if err := sonic.Unmarshal(data, &s); err != nil {
 		return err
 	}
 	val, err := NewDatasetStatusFromString(s)
@@ -296,12 +298,12 @@ func (d *DatasetStatus) UnmarshalJSON(data []byte) error {
 }
 
 func (m MediaContentType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(string(m))
+	return sonic.Marshal(string(m))
 }
 
 func (m *MediaContentType) UnmarshalJSON(data []byte) error {
 	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
+	if err := sonic.Unmarshal(data, &s); err != nil {
 		return err
 	}
 	val, err := NewMediaContentTypeFromString(s)
@@ -313,12 +315,12 @@ func (m *MediaContentType) UnmarshalJSON(data []byte) error {
 }
 
 func (m ModelUsageUnit) MarshalJSON() ([]byte, error) {
-	return json.Marshal(string(m))
+	return sonic.Marshal(string(m))
 }
 
 func (m *ModelUsageUnit) UnmarshalJSON(data []byte) error {
 	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
+	if err := sonic.Unmarshal(data, &s); err != nil {
 		return err
 	}
 	val, err := NewModelUsageUnitFromString(s)
@@ -330,12 +332,12 @@ func (m *ModelUsageUnit) UnmarshalJSON(data []byte) error {
 }
 
 func (o ObservationLevel) MarshalJSON() ([]byte, error) {
-	return json.Marshal(string(o))
+	return sonic.Marshal(string(o))
 }
 
 func (o *ObservationLevel) UnmarshalJSON(data []byte) error {
 	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
+	if err := sonic.Unmarshal(data, &s); err != nil {
 		return err
 	}
 	val, err := NewObservationLevelFromString(s)
@@ -347,12 +349,12 @@ func (o *ObservationLevel) UnmarshalJSON(data []byte) error {
 }
 
 func (o ObservationType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(string(o))
+	return sonic.Marshal(string(o))
 }
 
 func (o *ObservationType) UnmarshalJSON(data []byte) error {
 	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
+	if err := sonic.Unmarshal(data, &s); err != nil {
 		return err
 	}
 	val, err := NewObservationTypeFromString(s)
@@ -364,12 +366,12 @@ func (o *ObservationType) UnmarshalJSON(data []byte) error {
 }
 
 func (s ScoreDataType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(string(s))
+	return sonic.Marshal(string(s))
 }
 
 func (s *ScoreDataType) UnmarshalJSON(data []byte) error {
 	var str string
-	if err := json.Unmarshal(data, &str); err != nil {
+	if err := sonic.Unmarshal(data, &str); err != nil {
 		return err
 	}
 	val, err := NewScoreDataTypeFromString(str)
@@ -381,12 +383,12 @@ func (s *ScoreDataType) UnmarshalJSON(data []byte) error {
 }
 
 func (s ScoreSource) MarshalJSON() ([]byte, error) {
-	return json.Marshal(string(s))
+	return sonic.Marshal(string(s))
 }
 
 func (s *ScoreSource) UnmarshalJSON(data []byte) error {
 	var str string
-	if err := json.Unmarshal(data, &str); err != nil {
+	if err := sonic.Unmarshal(data, &str); err != nil {
 		return err
 	}
 	val, err := NewScoreSourceFromString(str)
@@ -398,12 +400,12 @@ func (s *ScoreSource) UnmarshalJSON(data []byte) error {
 }
 
 func (a AnnotationQueueStatus) MarshalJSON() ([]byte, error) {
-	return json.Marshal(string(a))
+	return sonic.Marshal(string(a))
 }
 
 func (a *AnnotationQueueStatus) UnmarshalJSON(data []byte) error {
 	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
+	if err := sonic.Unmarshal(data, &s); err != nil {
 		return err
 	}
 	val, err := NewAnnotationQueueStatusFromString(s)
@@ -415,12 +417,12 @@ func (a *AnnotationQueueStatus) UnmarshalJSON(data []byte) error {
 }
 
 func (a AnnotationQueueObjectType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(string(a))
+	return sonic.Marshal(string(a))
 }
 
 func (a *AnnotationQueueObjectType) UnmarshalJSON(data []byte) error {
 	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
+	if err := sonic.Unmarshal(data, &s); err != nil {
 		return err
 	}
 	val, err := NewAnnotationQueueObjectTypeFromString(s)
