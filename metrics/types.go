@@ -3,7 +3,7 @@ package metrics
 import (
 	"time"
 
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Daily represents daily metrics

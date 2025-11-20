@@ -7,8 +7,8 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/langfuse/langfuse-go/core"
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/core"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Client provides methods for session operations

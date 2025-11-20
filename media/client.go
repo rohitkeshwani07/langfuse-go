@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/langfuse/langfuse-go/core"
+	"github.com/rohitkeshwani07/langfuse-go/core"
 )
 
 // Client provides methods for media operations

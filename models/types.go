@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Model represents a model configuration

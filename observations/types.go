@@ -3,7 +3,7 @@ package observations
 import (
 	"time"
 
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Observation represents an observation (event, span, or generation)

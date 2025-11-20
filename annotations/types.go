@@ -3,7 +3,7 @@ package annotations
 import (
 	"time"
 
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Queue represents an annotation queue

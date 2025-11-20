@@ -4,7 +4,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/langfuse/langfuse-go/observations"
+	"github.com/rohitkeshwani07/langfuse-go/observations"
 )
 
 // Trace represents a trace in Langfuse

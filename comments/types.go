@@ -3,7 +3,7 @@ package comments
 import (
 	"time"
 
-	"github.com/langfuse/langfuse-go/types"
+	"github.com/rohitkeshwani07/langfuse-go/types"
 )
 
 // Comment represents a comment on a trace or observation
