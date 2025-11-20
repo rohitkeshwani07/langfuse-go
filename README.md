@@ -505,6 +505,53 @@ fmt.Printf("Successes: %d, Errors: %d\n",
 	len(response.Successes), len(response.Errors))
 ```
 
+## Performance Optimization
+
+For performance-critical applications, the library provides optimized methods that allow you to reuse allocated memory and avoid allocations:
+
+### GetIn Methods
+
+Instead of allocating a new response object on each call, you can provide your own pre-allocated variable:
+
+```go
+// Standard usage (allocates new memory each time)
+trace, err := c.Traces.Get(ctx, "trace-123")
+
+// Optimized usage (reuse allocated memory)
+var trace traces.Trace
+err := c.Traces.GetIn(ctx, "trace-123", &trace)
+// Reuse the same variable for subsequent calls
+err = c.Traces.GetIn(ctx, "trace-456", &trace)
+```
+
+### ListIn Methods
+
+Similarly, for list operations, you can reuse the response struct:
+
+```go
+// Standard usage
+obs, err := c.Observations.List(ctx, params)
+
+// Optimized usage (reuse allocated memory)
+var response observations.ListResponse
+err := c.Observations.ListIn(ctx, params, &response)
+// Process response.Data...
+
+// Reuse for next page
+params.Page = types.Int(2)
+err = c.Observations.ListIn(ctx, params, &response)
+```
+
+**Benefits:**
+- Reduced memory allocations in hot paths
+- Lower garbage collection pressure
+- Better performance in high-throughput scenarios
+
+**Available methods:**
+- `traces.GetIn(ctx, traceID, out)`
+- `observations.GetIn(ctx, observationID, out)`
+- `observations.ListIn(ctx, params, out)`
+
 ## Helper Functions
 
 The `types` package provides convenient pointer helper functions:
