@@ -45,3 +45,12 @@ func (c *Client) GetIn(ctx context.Context, traceID string, out interface{}) err
 func (c *Client) Update(ctx context.Context, traceID string, req *UpdateTraceRequest) error {
 	return c.httpClient.DoRequest(ctx, http.MethodPatch, "/api/public/traces/"+url.PathEscape(traceID), req, nil)
 }
+
+// GetTree retrieves a trace by ID with observations in a tree structure
+func (c *Client) GetTree(ctx context.Context, traceID string) (*TraceTree, error) {
+	var response TraceWithObservations
+	if err := c.httpClient.DoRequest(ctx, http.MethodGet, "/api/public/traces/"+url.PathEscape(traceID), nil, &response); err != nil {
+		return nil, err
+	}
+	return response.ToTraceTree(), nil
+}
