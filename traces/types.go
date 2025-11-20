@@ -67,99 +67,141 @@ type UpdateTraceRequest struct {
 // TreeObservation represents a single observation in the trace tree response
 type TreeObservation struct {
 	ID                   string                 `json:"id"`
+	TraceID              *string                `json:"traceId,omitempty"`
+	ProjectID            string                 `json:"projectId"`
 	Type                 string                 `json:"type"`
-	ParentObservationID  string                 `json:"parentObservationId"`
+	ParentObservationID  string                 `json:"parentObservationId,omitempty"`
 	StartTime            time.Time              `json:"startTime"`
-	EndTime              time.Time              `json:"endTime"`
+	EndTime              *time.Time             `json:"endTime,omitempty"`
 	Name                 string                 `json:"name"`
-	Metadata             map[string]interface{} `json:"metadata"`
-	ModelParameters      map[string]interface{} `json:"modelParameters"`
-	CompletionStartTime  string                 `json:"completionStartTime"`
-	CreatedAt            string                 `json:"createdAt"`
-	UpdatedAt            string                 `json:"updatedAt"`
-	UsageDetails         map[string]interface{} `json:"usageDetails"`
-	CostDetails          map[string]interface{} `json:"costDetails"`
-	Model                string                 `json:"model"`
-	Latency              float64                `json:"latency"`
-	InputPrice           float64                `json:"inputPrice"`
-	OutputPrice          float64                `json:"outputPrice"`
-	TotalPrice           float64                `json:"totalPrice"`
-	CalculatedInputCost  float64                `json:"calculatedInputCost"`
-	CalculatedOutputCost float64                `json:"calculatedOutputCost"`
-	CalculatedTotalCost  float64                `json:"calculatedTotalCost"`
-	Unit                 string                 `json:"unit"`
-	PromptTokens         int64                  `json:"promptTokens"`
-	CompletionTokens     int64                  `json:"completionTokens"`
-	TotalTokens          int64                  `json:"totalTokens"`
-	ModelID              string                 `json:"modelId"`
-	Usage                map[string]interface{} `json:"usage"`
+	Environment          string                 `json:"environment,omitempty"`
+	Metadata             map[string]interface{} `json:"metadata,omitempty"`
+	Level                string                 `json:"level,omitempty"`
+	StatusMessage        *string                `json:"statusMessage,omitempty"`
+	Version              *string                `json:"version,omitempty"`
+	Input                interface{}            `json:"input,omitempty"`
+	Output               interface{}            `json:"output,omitempty"`
+	ModelParameters      map[string]interface{} `json:"modelParameters,omitempty"`
+	CompletionStartTime  *time.Time             `json:"completionStartTime,omitempty"`
+	CreatedAt            time.Time              `json:"createdAt"`
+	UpdatedAt            time.Time              `json:"updatedAt"`
+	UsageDetails         map[string]interface{} `json:"usageDetails,omitempty"`
+	CostDetails          map[string]interface{} `json:"costDetails,omitempty"`
+	Model                *string                `json:"model,omitempty"`
+	PromptID             *string                `json:"promptId,omitempty"`
+	PromptName           *string                `json:"promptName,omitempty"`
+	PromptVersion        *int                   `json:"promptVersion,omitempty"`
+	Latency              float64                `json:"latency,omitempty"`
+	TimeToFirstToken     *float64               `json:"timeToFirstToken,omitempty"`
+	InputPrice           float64                `json:"inputPrice,omitempty"`
+	OutputPrice          float64                `json:"outputPrice,omitempty"`
+	TotalPrice           float64                `json:"totalPrice,omitempty"`
+	CalculatedInputCost  *float64               `json:"calculatedInputCost,omitempty"`
+	CalculatedOutputCost *float64               `json:"calculatedOutputCost,omitempty"`
+	CalculatedTotalCost  float64                `json:"calculatedTotalCost,omitempty"`
+	Unit                 string                 `json:"unit,omitempty"`
+	PromptTokens         *int                   `json:"promptTokens,omitempty"`
+	CompletionTokens     *int                   `json:"completionTokens,omitempty"`
+	TotalTokens          *int                   `json:"totalTokens,omitempty"`
+	ModelID              *string                `json:"modelId,omitempty"`
+	Usage                map[string]interface{} `json:"usage,omitempty"`
 }
 
 // TraceWithObservations represents the JSON payload with flat observations
 type TraceWithObservations struct {
 	ID           string                 `json:"id"`
+	ProjectID    string                 `json:"projectId"`
 	Name         string                 `json:"name"`
 	Timestamp    time.Time              `json:"timestamp"`
-	UserID       string                 `json:"userId"`
-	SessionID    string                 `json:"sessionId"`
-	Input        map[string]interface{} `json:"input"`
-	Output       map[string]interface{} `json:"output"`
-	Metadata     map[string]interface{} `json:"metadata"`
-	CreatedAt    string                 `json:"createdAt"`
-	UpdatedAt    string                 `json:"updatedAt"`
-	ExternalID   string                 `json:"externalId"`
-	Latency      float64                `json:"latency"`
-	Observations []*TreeObservation     `json:"observations"`
-	TotalCost    float64                `json:"totalCost"`
+	Environment  string                 `json:"environment,omitempty"`
+	Tags         []string               `json:"tags,omitempty"`
+	Bookmarked   bool                   `json:"bookmarked,omitempty"`
+	Release      *string                `json:"release,omitempty"`
+	Version      *string                `json:"version,omitempty"`
+	UserID       string                 `json:"userId,omitempty"`
+	SessionID    string                 `json:"sessionId,omitempty"`
+	Public       bool                   `json:"public,omitempty"`
+	Input        interface{}            `json:"input,omitempty"`
+	Output       interface{}            `json:"output,omitempty"`
+	Metadata     map[string]interface{} `json:"metadata,omitempty"`
+	CreatedAt    time.Time              `json:"createdAt"`
+	UpdatedAt    time.Time              `json:"updatedAt"`
+	ExternalID   interface{}            `json:"externalId,omitempty"`
+	Scores       []interface{}          `json:"scores,omitempty"`
+	Latency      float64                `json:"latency,omitempty"`
+	Observations []*TreeObservation     `json:"observations,omitempty"`
+	HtmlPath     string                 `json:"htmlPath,omitempty"`
+	TotalCost    float64                `json:"totalCost,omitempty"`
 }
 
 // ObservationNode represents a node in the trace tree structure
 type ObservationNode struct {
 	ID                   string                 `json:"id"`
+	TraceID              *string                `json:"traceId,omitempty"`
+	ProjectID            string                 `json:"projectId"`
 	Name                 string                 `json:"name"`
 	Type                 string                 `json:"type"`
+	Environment          string                 `json:"environment,omitempty"`
 	StartTime            time.Time              `json:"startTime"`
-	EndTime              time.Time              `json:"endTime"`
+	EndTime              *time.Time             `json:"endTime,omitempty"`
 	Metadata             map[string]interface{} `json:"metadata,omitempty"`
-	Latency              float64                `json:"latency"`
+	Level                string                 `json:"level,omitempty"`
+	StatusMessage        *string                `json:"statusMessage,omitempty"`
+	Version              *string                `json:"version,omitempty"`
+	Input                interface{}            `json:"input,omitempty"`
+	Output               interface{}            `json:"output,omitempty"`
+	Latency              float64                `json:"latency,omitempty"`
 	Children             []*ObservationNode     `json:"children,omitempty"`
 	ModelParameters      map[string]interface{} `json:"modelParameters,omitempty"`
-	CompletionStartTime  string                 `json:"completionStartTime"`
-	CreatedAt            string                 `json:"createdAt"`
-	UpdatedAt            string                 `json:"updatedAt"`
-	UsageDetails         map[string]interface{} `json:"usageDetails"`
-	CostDetails          map[string]interface{} `json:"costDetails"`
-	Model                string                 `json:"model"`
-	InputPrice           float64                `json:"inputPrice"`
-	OutputPrice          float64                `json:"outputPrice"`
-	TotalPrice           float64                `json:"totalPrice"`
-	CalculatedInputCost  float64                `json:"calculatedInputCost"`
-	CalculatedOutputCost float64                `json:"calculatedOutputCost"`
-	CalculatedTotalCost  float64                `json:"calculatedTotalCost"`
-	Unit                 string                 `json:"unit"`
-	PromptTokens         int64                  `json:"promptTokens"`
-	CompletionTokens     int64                  `json:"completionTokens"`
-	TotalTokens          int64                  `json:"totalTokens"`
-	ModelID              string                 `json:"modelId"`
-	Usage                map[string]interface{} `json:"usage"`
+	CompletionStartTime  *time.Time             `json:"completionStartTime,omitempty"`
+	CreatedAt            time.Time              `json:"createdAt"`
+	UpdatedAt            time.Time              `json:"updatedAt"`
+	UsageDetails         map[string]interface{} `json:"usageDetails,omitempty"`
+	CostDetails          map[string]interface{} `json:"costDetails,omitempty"`
+	Model                *string                `json:"model,omitempty"`
+	PromptID             *string                `json:"promptId,omitempty"`
+	PromptName           *string                `json:"promptName,omitempty"`
+	PromptVersion        *int                   `json:"promptVersion,omitempty"`
+	TimeToFirstToken     *float64               `json:"timeToFirstToken,omitempty"`
+	InputPrice           float64                `json:"inputPrice,omitempty"`
+	OutputPrice          float64                `json:"outputPrice,omitempty"`
+	TotalPrice           float64                `json:"totalPrice,omitempty"`
+	CalculatedInputCost  *float64               `json:"calculatedInputCost,omitempty"`
+	CalculatedOutputCost *float64               `json:"calculatedOutputCost,omitempty"`
+	CalculatedTotalCost  float64                `json:"calculatedTotalCost,omitempty"`
+	Unit                 string                 `json:"unit,omitempty"`
+	PromptTokens         *int                   `json:"promptTokens,omitempty"`
+	CompletionTokens     *int                   `json:"completionTokens,omitempty"`
+	TotalTokens          *int                   `json:"totalTokens,omitempty"`
+	ModelID              *string                `json:"modelId,omitempty"`
+	Usage                map[string]interface{} `json:"usage,omitempty"`
 }
 
 // TraceTree represents the trace with tree-structured observations
 type TraceTree struct {
-	ID         string                 `json:"id"`
-	Name       string                 `json:"name"`
-	Timestamp  time.Time              `json:"timestamp"`
-	UserID     string                 `json:"userId"`
-	SessionID  string                 `json:"sessionId"`
-	Input      map[string]interface{} `json:"input"`
-	Output     map[string]interface{} `json:"output"`
-	Metadata   map[string]interface{} `json:"metadata"`
-	CreatedAt  string                 `json:"createdAt"`
-	UpdatedAt  string                 `json:"updatedAt"`
-	ExternalID interface{}            `json:"externalId"`
-	Latency    float64                `json:"latency"`
-	RootNode   []*ObservationNode     `json:"rootNode"`
-	TotalCost  float64                `json:"totalCost"`
+	ID          string                 `json:"id"`
+	ProjectID   string                 `json:"projectId"`
+	Name        string                 `json:"name"`
+	Timestamp   time.Time              `json:"timestamp"`
+	Environment string                 `json:"environment,omitempty"`
+	Tags        []string               `json:"tags,omitempty"`
+	Bookmarked  bool                   `json:"bookmarked,omitempty"`
+	Release     *string                `json:"release,omitempty"`
+	Version     *string                `json:"version,omitempty"`
+	UserID      string                 `json:"userId,omitempty"`
+	SessionID   string                 `json:"sessionId,omitempty"`
+	Public      bool                   `json:"public,omitempty"`
+	Input       interface{}            `json:"input,omitempty"`
+	Output      interface{}            `json:"output,omitempty"`
+	Metadata    map[string]interface{} `json:"metadata,omitempty"`
+	CreatedAt   time.Time              `json:"createdAt"`
+	UpdatedAt   time.Time              `json:"updatedAt"`
+	ExternalID  interface{}            `json:"externalId,omitempty"`
+	Scores      []interface{}          `json:"scores,omitempty"`
+	Latency     float64                `json:"latency,omitempty"`
+	RootNode    []*ObservationNode     `json:"rootNode"`
+	HtmlPath    string                 `json:"htmlPath,omitempty"`
+	TotalCost   float64                `json:"totalCost,omitempty"`
 }
 
 // buildObservationTree converts flat observations to a tree structure
@@ -168,15 +210,27 @@ func buildObservationTree(observations []*TreeObservation) []*ObservationNode {
 	for _, observation := range observations {
 		node := &ObservationNode{
 			ID:                   observation.ID,
+			TraceID:              observation.TraceID,
+			ProjectID:            observation.ProjectID,
 			Type:                 observation.Type,
+			Environment:          observation.Environment,
 			StartTime:            observation.StartTime,
 			EndTime:              observation.EndTime,
 			Name:                 observation.Name,
 			Metadata:             observation.Metadata,
+			Level:                observation.Level,
+			StatusMessage:        observation.StatusMessage,
+			Version:              observation.Version,
+			Input:                observation.Input,
+			Output:               observation.Output,
 			ModelParameters:      observation.ModelParameters,
 			CostDetails:          observation.CostDetails,
 			Model:                observation.Model,
+			PromptID:             observation.PromptID,
+			PromptName:           observation.PromptName,
+			PromptVersion:        observation.PromptVersion,
 			Latency:              observation.Latency,
+			TimeToFirstToken:     observation.TimeToFirstToken,
 			InputPrice:           observation.InputPrice,
 			OutputPrice:          observation.OutputPrice,
 			TotalPrice:           observation.TotalPrice,
@@ -240,19 +294,28 @@ func buildObservationTree(observations []*TreeObservation) []*ObservationNode {
 func (t *TraceWithObservations) ToTraceTree() *TraceTree {
 	nodes := buildObservationTree(t.Observations)
 	return &TraceTree{
-		ID:         t.ID,
-		Name:       t.Name,
-		Timestamp:  t.Timestamp,
-		UserID:     t.UserID,
-		SessionID:  t.SessionID,
-		Input:      t.Input,
-		Output:     t.Output,
-		Metadata:   t.Metadata,
-		CreatedAt:  t.CreatedAt,
-		UpdatedAt:  t.UpdatedAt,
-		ExternalID: t.ExternalID,
-		RootNode:   nodes,
-		Latency:    t.Latency,
-		TotalCost:  t.TotalCost,
+		ID:          t.ID,
+		ProjectID:   t.ProjectID,
+		Name:        t.Name,
+		Timestamp:   t.Timestamp,
+		Environment: t.Environment,
+		Tags:        t.Tags,
+		Bookmarked:  t.Bookmarked,
+		Release:     t.Release,
+		Version:     t.Version,
+		UserID:      t.UserID,
+		SessionID:   t.SessionID,
+		Public:      t.Public,
+		Input:       t.Input,
+		Output:      t.Output,
+		Metadata:    t.Metadata,
+		CreatedAt:   t.CreatedAt,
+		UpdatedAt:   t.UpdatedAt,
+		ExternalID:  t.ExternalID,
+		Scores:      t.Scores,
+		Latency:     t.Latency,
+		RootNode:    nodes,
+		HtmlPath:    t.HtmlPath,
+		TotalCost:   t.TotalCost,
 	}
 }
