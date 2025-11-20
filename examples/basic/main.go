@@ -2,16 +2,13 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"github.com/langfuse/langfuse-go/client"
-	"github.com/langfuse/langfuse-go/observations"
-	"github.com/langfuse/langfuse-go/scores"
 	"github.com/langfuse/langfuse-go/traces"
-	"github.com/langfuse/langfuse-go/types"
 )
 
 func main() {
@@ -28,97 +25,69 @@ func main() {
 
 	ctx := context.Background()
 
-	// Check API health
-	health, err := c.Health(ctx)
+	// Test trace ID and observation ID
+	traceID := "37ae885d46abc96bde952bcc387304b7"
+	observationID := "db5343cd53694930"
+
+	fmt.Println("=== GetTree Example ===")
+	fmt.Printf("Fetching trace tree for: %s\n\n", traceID)
+
+	// Get trace tree with compact observations
+	tree, err := c.Traces.GetTree(ctx, traceID)
 	if err != nil {
-		log.Fatalf("Failed to check health: %v", err)
+		log.Fatalf("Failed to get trace tree: %v", err)
 	}
-	fmt.Printf("API Status: %s\n", health.Status)
 
-	// Create a trace
-	traceID := "example-trace-" + fmt.Sprint(time.Now().Unix())
-	err = c.Traces.Create(ctx, &traces.CreateTraceRequest{
-		ID:     types.String(traceID),
-		Name:   types.String("example-trace"),
-		UserID: types.String("user-123"),
-		Input: map[string]interface{}{
-			"query": "What is Langfuse?",
-		},
-		Metadata: map[string]interface{}{
-			"example": true,
-		},
-	})
+	// Pretty print the tree
+	treeJSON, err := json.MarshalIndent(tree, "", "  ")
 	if err != nil {
-		log.Fatalf("Failed to create trace: %v", err)
+		log.Fatalf("Failed to marshal tree: %v", err)
 	}
-	fmt.Printf("Created trace: %s\n", traceID)
+	fmt.Println("Trace Tree (CompactTrace with nested observations):")
+	fmt.Println(string(treeJSON))
 
-	// Create a generation
-	generationID := "example-gen-" + fmt.Sprint(time.Now().Unix())
-	err = c.Observations.CreateGeneration(ctx, &observations.CreateGenerationRequest{
-		ID:      types.String(generationID),
-		TraceID: types.String(traceID),
-		Name:    types.String("gpt-4-completion"),
-		Model:   types.String("gpt-4"),
-		Input: []map[string]interface{}{
-			{
-				"role":    "user",
-				"content": "What is Langfuse?",
-			},
-		},
-		Output: map[string]interface{}{
-			"role":    "assistant",
-			"content": "Langfuse is an open source LLM engineering platform.",
-		},
-		Usage: &types.Usage{
-			PromptTokens:     types.Int(15),
-			CompletionTokens: types.Int(25),
-			TotalTokens:      types.Int(40),
-		},
-		ModelParameters: map[string]interface{}{
-			"temperature": 0.7,
-			"max_tokens":  500,
-		},
-	})
+	fmt.Printf("\n\nTrace Summary:\n")
+	fmt.Printf("  ID: %s\n", tree.ID)
+	fmt.Printf("  Name: %s\n", tree.Name)
+	fmt.Printf("  Total Cost: %.4f\n", tree.TotalCost)
+	fmt.Printf("  Latency: %.2fms\n", tree.Latency)
+	fmt.Printf("  Root Observation Nodes: %d\n", len(tree.RootNode))
+
+	// Print observation tree structure
+	fmt.Printf("\n\nObservation Tree Structure:\n")
+	printObservationTree(tree.RootNode, 0)
+
+	fmt.Println("\n\n=== Observation.Get Example ===")
+	fmt.Printf("Fetching observation: %s\n\n", observationID)
+
+	// Get single observation with full details (includes input/output)
+	observation, err := c.Observations.Get(ctx, observationID)
 	if err != nil {
-		log.Fatalf("Failed to create generation: %v", err)
+		log.Fatalf("Failed to get observation: %v", err)
 	}
-	fmt.Printf("Created generation: %s\n", generationID)
 
-	// Create a score
-	scoreResp, err := c.Scores.Create(ctx, &scores.CreateRequest{
-		Name:    "accuracy",
-		Value:   0.95,
-		TraceID: traceID,
-		Comment: types.String("High quality response"),
-	})
+	// Pretty print the observation
+	obsJSON, err := json.MarshalIndent(observation, "", "  ")
 	if err != nil {
-		log.Fatalf("Failed to create score: %v", err)
+		log.Fatalf("Failed to marshal observation: %v", err)
 	}
-	fmt.Printf("Created score: %s\n", scoreResp.ID)
+	fmt.Println("Observation Details (includes input/output):")
+	fmt.Println(string(obsJSON))
 
-	// Wait a bit for data to be available
-	time.Sleep(2 * time.Second)
+	fmt.Println("\n\nExample completed successfully!")
+}
 
-	// Get the trace
-	trace, err := c.Traces.Get(ctx, traceID)
-	if err != nil {
-		log.Fatalf("Failed to get trace: %v", err)
-	}
-	fmt.Printf("Retrieved trace: %s (Name: %s)\n", trace.ID, *trace.Name)
-
-	// Get scores for the trace
-	scoresResp, err := c.Scores.List(ctx, &scores.ListParams{
-		TraceID: types.String(traceID),
-		Limit:   types.Int(10),
-	})
-	if err != nil {
-		log.Fatalf("Failed to get scores: %v", err)
-	}
-	fmt.Printf("Found %d scores for trace\n", len(scoresResp.Data))
-	for _, score := range scoresResp.Data {
-		fmt.Printf("  - %s: %v\n", score.Name, score.Value)
+// printObservationTree recursively prints the observation tree structure
+func printObservationTree(observations []*traces.ObservationNode, depth int) {
+	indent := ""
+	for i := 0; i < depth; i++ {
+		indent += "  "
 	}
 
-	fmt.Println("\nExample completed successfully!")
+	for _, obs := range observations {
+		fmt.Printf("%s- %s (%s) [%s]\n", indent, obs.Name, obs.Type, obs.ID)
+		if len(obs.Children) > 0 {
+			printObservationTree(obs.Children, depth+1)
+		}
+	}
 }
