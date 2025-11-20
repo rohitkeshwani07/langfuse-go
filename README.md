@@ -15,7 +15,7 @@ This library implements the Langfuse API based on the [OpenAPI specification](ht
 - 📦 **Easy to Use**: Simple, intuitive API with sensible defaults
 - 🔄 **Context Support**: Full support for context-based cancellation and timeouts
 - 🛠️ **Flexible Configuration**: Customizable HTTP client, base URL, and timeouts
-- ⚡ **Performance Optimized**: [Memory-efficient methods](#performance-optimization) for high-throughput scenarios
+- ⚡ **Performance Optimized**: Memory-efficient methods for high-throughput scenarios (see Performance Optimization section)
 
 ## Installation
 
