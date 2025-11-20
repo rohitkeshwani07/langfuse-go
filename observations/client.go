@@ -61,6 +61,12 @@ func (c *Client) Get(ctx context.Context, observationID string) (*Observation, e
 	return &response, nil
 }
 
+// GetIn retrieves an observation by ID into the provided output variable.
+// This is an optimization to allow reusing allocated memory and avoid allocations.
+func (c *Client) GetIn(ctx context.Context, observationID string, out interface{}) error {
+	return c.httpClient.DoRequest(ctx, http.MethodGet, "/api/public/observations/"+url.PathEscape(observationID), nil, out)
+}
+
 // List retrieves observations with optional filtering
 func (c *Client) List(ctx context.Context, params *ListParams) (*ListResponse, error) {
 	path := "/api/public/observations"
@@ -94,4 +100,36 @@ func (c *Client) List(ctx context.Context, params *ListParams) (*ListResponse, e
 		return nil, err
 	}
 	return &response, nil
+}
+
+// ListIn retrieves observations with optional filtering into the provided output variable.
+// This is an optimization to allow reusing allocated memory and avoid allocations.
+func (c *Client) ListIn(ctx context.Context, params *ListParams, out interface{}) error {
+	path := "/api/public/observations"
+	if params != nil {
+		query := url.Values{}
+		if params.Page != nil {
+			query.Set("page", strconv.Itoa(*params.Page))
+		}
+		if params.Limit != nil {
+			query.Set("limit", strconv.Itoa(*params.Limit))
+		}
+		if params.Name != nil {
+			query.Set("name", *params.Name)
+		}
+		if params.UserID != nil {
+			query.Set("userId", *params.UserID)
+		}
+		if params.Type != nil {
+			query.Set("type", string(*params.Type))
+		}
+		if params.TraceID != nil {
+			query.Set("traceId", *params.TraceID)
+		}
+		if len(query) > 0 {
+			path += "?" + query.Encode()
+		}
+	}
+
+	return c.httpClient.DoRequest(ctx, http.MethodGet, path, nil, out)
 }

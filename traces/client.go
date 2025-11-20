@@ -35,6 +35,12 @@ func (c *Client) Get(ctx context.Context, traceID string) (*Trace, error) {
 	return &response, nil
 }
 
+// GetIn retrieves a trace by ID into the provided output variable.
+// This is an optimization to allow reusing allocated memory and avoid allocations.
+func (c *Client) GetIn(ctx context.Context, traceID string, out interface{}) error {
+	return c.httpClient.DoRequest(ctx, http.MethodGet, "/api/public/traces/"+url.PathEscape(traceID), nil, out)
+}
+
 // Update updates a trace
 func (c *Client) Update(ctx context.Context, traceID string, req *UpdateTraceRequest) error {
 	return c.httpClient.DoRequest(ctx, http.MethodPatch, "/api/public/traces/"+url.PathEscape(traceID), req, nil)
