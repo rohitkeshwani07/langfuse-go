@@ -10,7 +10,7 @@ import (
 type Comment struct {
 	ID           string                  `json:"id"`
 	Content      string                  `json:"content"`
-	ObjectType   types.CommentObjectType `json:"objectType"`
+	ObjectType   string `json:"objectType"`
 	ObjectID     string                  `json:"objectId"`
 	ProjectID    string                  `json:"projectId"`
 	AuthorUserID string                  `json:"authorUserId"`
@@ -21,7 +21,7 @@ type Comment struct {
 // CreateRequest represents the request body for creating a comment
 type CreateRequest struct {
 	Content    string                  `json:"content"`
-	ObjectType types.CommentObjectType `json:"objectType"`
+	ObjectType string `json:"objectType"`
 	ObjectID   string                  `json:"objectId"`
 }
 
@@ -34,7 +34,7 @@ type CreateResponse struct {
 type ListParams struct {
 	Page       *int
 	Limit      *int
-	ObjectType *types.CommentObjectType
+	ObjectType *string
 	ObjectID   *string
 }
 

@@ -15,7 +15,7 @@ type Model struct {
 	InputPrice      *float64               `json:"inputPrice,omitempty"`
 	OutputPrice     *float64               `json:"outputPrice,omitempty"`
 	TotalPrice      *float64               `json:"totalPrice,omitempty"`
-	Unit            *types.ModelUsageUnit  `json:"unit,omitempty"`
+	Unit            *string  `json:"unit,omitempty"`
 	TokenizerID     *string                `json:"tokenizerId,omitempty"`
 	TokenizerConfig map[string]interface{} `json:"tokenizerConfig,omitempty"`
 	CreatedAt       time.Time              `json:"createdAt"`
@@ -30,7 +30,7 @@ type CreateRequest struct {
 	InputPrice      *float64               `json:"inputPrice,omitempty"`
 	OutputPrice     *float64               `json:"outputPrice,omitempty"`
 	TotalPrice      *float64               `json:"totalPrice,omitempty"`
-	Unit            *types.ModelUsageUnit  `json:"unit,omitempty"`
+	Unit            *string  `json:"unit,omitempty"`
 	TokenizerID     *string                `json:"tokenizerId,omitempty"`
 	TokenizerConfig map[string]interface{} `json:"tokenizerConfig,omitempty"`
 }

@@ -12,7 +12,7 @@ type Dataset struct {
 	Name        string                 `json:"name"`
 	Description *string                `json:"description,omitempty"`
 	Metadata    map[string]interface{} `json:"metadata,omitempty"`
-	Status      *types.DatasetStatus   `json:"status,omitempty"`
+	Status      *string   `json:"status,omitempty"`
 	CreatedAt   time.Time              `json:"createdAt"`
 	UpdatedAt   time.Time              `json:"updatedAt"`
 	ProjectID   string                 `json:"projectId"`

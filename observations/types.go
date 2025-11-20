@@ -12,7 +12,7 @@ type Observation struct {
 	TraceID               *string                 `json:"traceId,omitempty"`
 	ProjectID             string                  `json:"projectId"`
 	ParentObservationID   *string                 `json:"parentObservationId,omitempty"`
-	Type                  types.ObservationType   `json:"type"`
+	Type                  string   `json:"type"`
 	Name                  *string                 `json:"name,omitempty"`
 	StartTime             time.Time               `json:"startTime"`
 	EndTime               *time.Time              `json:"endTime,omitempty"`
@@ -22,7 +22,7 @@ type Observation struct {
 	Input                 interface{}             `json:"input,omitempty"`
 	Output                interface{}             `json:"output,omitempty"`
 	Metadata              map[string]interface{}  `json:"metadata,omitempty"`
-	Level                 *types.ObservationLevel `json:"level,omitempty"`
+	Level                 *string `json:"level,omitempty"`
 	StatusMessage         *string                 `json:"statusMessage,omitempty"`
 	Version               *string                 `json:"version,omitempty"`
 	Environment           string                  `json:"environment,omitempty"`
@@ -59,7 +59,7 @@ type CreateEventRequest struct {
 	Metadata            map[string]interface{}  `json:"metadata,omitempty"`
 	Input               interface{}             `json:"input,omitempty"`
 	Output              interface{}             `json:"output,omitempty"`
-	Level               *types.ObservationLevel `json:"level,omitempty"`
+	Level               *string `json:"level,omitempty"`
 	StatusMessage       *string                 `json:"statusMessage,omitempty"`
 	Version             *string                 `json:"version,omitempty"`
 }
@@ -69,7 +69,7 @@ type UpdateEventRequest struct {
 	Metadata      map[string]interface{}  `json:"metadata,omitempty"`
 	Input         interface{}             `json:"input,omitempty"`
 	Output        interface{}             `json:"output,omitempty"`
-	Level         *types.ObservationLevel `json:"level,omitempty"`
+	Level         *string `json:"level,omitempty"`
 	StatusMessage *string                 `json:"statusMessage,omitempty"`
 }
 
@@ -84,7 +84,7 @@ type CreateSpanRequest struct {
 	Metadata            map[string]interface{}  `json:"metadata,omitempty"`
 	Input               interface{}             `json:"input,omitempty"`
 	Output              interface{}             `json:"output,omitempty"`
-	Level               *types.ObservationLevel `json:"level,omitempty"`
+	Level               *string `json:"level,omitempty"`
 	StatusMessage       *string                 `json:"statusMessage,omitempty"`
 	Version             *string                 `json:"version,omitempty"`
 }
@@ -95,7 +95,7 @@ type UpdateSpanRequest struct {
 	Metadata      map[string]interface{}  `json:"metadata,omitempty"`
 	Input         interface{}             `json:"input,omitempty"`
 	Output        interface{}             `json:"output,omitempty"`
-	Level         *types.ObservationLevel `json:"level,omitempty"`
+	Level         *string `json:"level,omitempty"`
 	StatusMessage *string                 `json:"statusMessage,omitempty"`
 }
 
@@ -116,7 +116,7 @@ type CreateGenerationRequest struct {
 	Usage               *types.Usage            `json:"usage,omitempty"`
 	PromptName          *string                 `json:"promptName,omitempty"`
 	PromptVersion       *int                    `json:"promptVersion,omitempty"`
-	Level               *types.ObservationLevel `json:"level,omitempty"`
+	Level               *string `json:"level,omitempty"`
 	StatusMessage       *string                 `json:"statusMessage,omitempty"`
 	Version             *string                 `json:"version,omitempty"`
 }
@@ -129,7 +129,7 @@ type UpdateGenerationRequest struct {
 	Input               interface{}             `json:"input,omitempty"`
 	Output              interface{}             `json:"output,omitempty"`
 	Usage               *types.Usage            `json:"usage,omitempty"`
-	Level               *types.ObservationLevel `json:"level,omitempty"`
+	Level               *string `json:"level,omitempty"`
 	StatusMessage       *string                 `json:"statusMessage,omitempty"`
 }
 
@@ -139,7 +139,7 @@ type ListParams struct {
 	Limit   *int
 	Name    *string
 	UserID  *string
-	Type    *types.ObservationType
+	Type    *string
 	TraceID *string
 }
 

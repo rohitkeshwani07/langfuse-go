@@ -21,8 +21,8 @@ type QueueItem struct {
 	ID          string                          `json:"id"`
 	QueueID     string                          `json:"queueId"`
 	ObjectID    string                          `json:"objectId"`
-	ObjectType  types.AnnotationQueueObjectType `json:"objectType"`
-	Status      types.AnnotationQueueStatus     `json:"status"`
+	ObjectType  string `json:"objectType"`
+	Status      string     `json:"status"`
 	CompletedAt *time.Time                      `json:"completedAt,omitempty"`
 	CreatedAt   time.Time                       `json:"createdAt"`
 	UpdatedAt   time.Time                       `json:"updatedAt"`
@@ -38,13 +38,13 @@ type CreateQueueRequest struct {
 // CreateQueueItemRequest represents the request body for creating an annotation queue item
 type CreateQueueItemRequest struct {
 	ObjectID   string                          `json:"objectId"`
-	ObjectType types.AnnotationQueueObjectType `json:"objectType"`
-	Status     *types.AnnotationQueueStatus    `json:"status,omitempty"`
+	ObjectType string `json:"objectType"`
+	Status     *string    `json:"status,omitempty"`
 }
 
 // UpdateQueueItemRequest represents the request body for updating an annotation queue item
 type UpdateQueueItemRequest struct {
-	Status *types.AnnotationQueueStatus `json:"status,omitempty"`
+	Status *string `json:"status,omitempty"`
 }
 
 // DeleteQueueItemResponse represents the response for deleting an annotation queue item
@@ -80,7 +80,7 @@ type ListQueuesResponse struct {
 type ListQueueItemsParams struct {
 	Page   *int
 	Limit  *int
-	Status *types.AnnotationQueueStatus
+	Status *string
 }
 
 // ListQueueItemsResponse represents a paginated list of annotation queue items

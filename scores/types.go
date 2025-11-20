@@ -11,8 +11,8 @@ type Score struct {
 	ID            string              `json:"id"`
 	Name          string              `json:"name"`
 	Value         interface{}         `json:"value"`
-	DataType      types.ScoreDataType `json:"dataType"`
-	Source        types.ScoreSource   `json:"source"`
+	DataType      string `json:"dataType"`
+	Source        string   `json:"source"`
 	Comment       *string             `json:"comment,omitempty"`
 	TraceID       string              `json:"traceId"`
 	ObservationID *string             `json:"observationId,omitempty"`
@@ -27,7 +27,7 @@ type CreateRequest struct {
 	ID            *string              `json:"id,omitempty"`
 	Name          string               `json:"name"`
 	Value         interface{}          `json:"value"`
-	DataType      *types.ScoreDataType `json:"dataType,omitempty"`
+	DataType      *string `json:"dataType,omitempty"`
 	Comment       *string              `json:"comment,omitempty"`
 	TraceID       string               `json:"traceId"`
 	ObservationID *string              `json:"observationId,omitempty"`
@@ -57,7 +57,7 @@ type ListResponse struct {
 type Config struct {
 	ID          string              `json:"id"`
 	Name        string              `json:"name"`
-	DataType    types.ScoreDataType `json:"dataType"`
+	DataType    string `json:"dataType"`
 	Description *string             `json:"description,omitempty"`
 	MinValue    *float64            `json:"minValue,omitempty"`
 	MaxValue    *float64            `json:"maxValue,omitempty"`

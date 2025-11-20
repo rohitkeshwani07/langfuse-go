@@ -2,21 +2,19 @@ package media
 
 import (
 	"time"
-
-	"github.com/langfuse/langfuse-go/types"
 )
 
 // Response represents media metadata
 type Response struct {
 	MediaID       string                 `json:"mediaId"`
-	ContentType   types.MediaContentType `json:"contentType"`
+	ContentType   string `json:"contentType"`
 	ContentLength int                    `json:"contentLength"`
 	UploadedAt    time.Time              `json:"uploadedAt"`
 }
 
 // UploadURLRequest represents the request for getting a media upload URL
 type UploadURLRequest struct {
-	ContentType   types.MediaContentType `json:"contentType"`
+	ContentType   string `json:"contentType"`
 	ContentLength int                    `json:"contentLength"`
 	TraceID       *string                `json:"traceId,omitempty"`
 	ObservationID *string                `json:"observationId,omitempty"`
