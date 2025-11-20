@@ -16,6 +16,7 @@ This library implements the Langfuse API based on the [OpenAPI specification](ht
 - 🔄 **Context Support**: Full support for context-based cancellation and timeouts
 - 🛠️ **Flexible Configuration**: Customizable HTTP client, base URL, and timeouts
 - ⚡ **Performance Optimized**: Memory-efficient methods for high-throughput scenarios (see Performance Optimization section)
+- 🌳 **Optimized Trace Trees**: Special `GetTree` method that does the heavy lifting of building nested trace structures and returns compact observations (excludes input/output) for significant memory savings
 - 🚄 **Fast JSON Processing**: Uses bytedance/sonic for high-performance JSON marshaling/unmarshaling, optimized for large trace payloads
 
 ## Installation
