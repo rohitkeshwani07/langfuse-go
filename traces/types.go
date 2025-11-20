@@ -135,7 +135,9 @@ type CompactTrace struct {
 	TotalCost    float64                 `json:"totalCost,omitempty"`
 }
 
-// ObservationNode represents a node in the trace tree structure
+// ObservationNode represents a node in the trace tree structure.
+// This is a compact representation that excludes input/output fields to reduce memory allocation
+// when working with large trace trees.
 type ObservationNode struct {
 	ID                   string                 `json:"id"`
 	TraceID              *string                `json:"traceId,omitempty"`
@@ -149,8 +151,6 @@ type ObservationNode struct {
 	Level                string                 `json:"level,omitempty"`
 	StatusMessage        *string                `json:"statusMessage,omitempty"`
 	Version              *string                `json:"version,omitempty"`
-	Input                interface{}            `json:"input,omitempty"`
-	Output               interface{}            `json:"output,omitempty"`
 	Latency              float64                `json:"latency,omitempty"`
 	Children             []*ObservationNode     `json:"children,omitempty"`
 	ModelParameters      map[string]interface{} `json:"modelParameters,omitempty"`
