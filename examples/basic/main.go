@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"github.com/langfuse/langfuse-go/client"
-	"github.com/langfuse/langfuse-go/traces"
+	"github.com/langfuse/langfuse-go/core"
 )
 
 func main() {
@@ -21,7 +21,7 @@ func main() {
 	}
 
 	// Initialize the Langfuse client
-	c := client.New(publicKey, secretKey)
+	c := client.New(publicKey, secretKey, core.WithBaseURL("https://us.cloud.langfuse.com"))
 
 	ctx := context.Background()
 
@@ -46,17 +46,6 @@ func main() {
 	fmt.Println("Trace Tree (CompactTrace with nested observations):")
 	fmt.Println(string(treeJSON))
 
-	fmt.Printf("\n\nTrace Summary:\n")
-	fmt.Printf("  ID: %s\n", tree.ID)
-	fmt.Printf("  Name: %s\n", tree.Name)
-	fmt.Printf("  Total Cost: %.4f\n", tree.TotalCost)
-	fmt.Printf("  Latency: %.2fms\n", tree.Latency)
-	fmt.Printf("  Root Observation Nodes: %d\n", len(tree.RootNode))
-
-	// Print observation tree structure
-	fmt.Printf("\n\nObservation Tree Structure:\n")
-	printObservationTree(tree.RootNode, 0)
-
 	fmt.Println("\n\n=== Observation.Get Example ===")
 	fmt.Printf("Fetching observation: %s\n\n", observationID)
 
@@ -75,19 +64,4 @@ func main() {
 	fmt.Println(string(obsJSON))
 
 	fmt.Println("\n\nExample completed successfully!")
-}
-
-// printObservationTree recursively prints the observation tree structure
-func printObservationTree(observations []*traces.ObservationNode, depth int) {
-	indent := ""
-	for i := 0; i < depth; i++ {
-		indent += "  "
-	}
-
-	for _, obs := range observations {
-		fmt.Printf("%s- %s (%s) [%s]\n", indent, obs.Name, obs.Type, obs.ID)
-		if len(obs.Children) > 0 {
-			printObservationTree(obs.Children, depth+1)
-		}
-	}
 }
