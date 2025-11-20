@@ -64,8 +64,10 @@ type UpdateTraceRequest struct {
 	Public    *bool                  `json:"public,omitempty"`
 }
 
-// TreeObservation represents a single observation in the trace tree response
-type TreeObservation struct {
+// CompactObservation represents a single observation in the trace tree response.
+// This is a compact representation that excludes input/output fields to reduce memory allocation
+// when fetching traces with large payloads.
+type CompactObservation struct {
 	ID                   string                 `json:"id"`
 	TraceID              *string                `json:"traceId,omitempty"`
 	ProjectID            string                 `json:"projectId"`
@@ -79,8 +81,6 @@ type TreeObservation struct {
 	Level                string                 `json:"level,omitempty"`
 	StatusMessage        *string                `json:"statusMessage,omitempty"`
 	Version              *string                `json:"version,omitempty"`
-	Input                interface{}            `json:"input,omitempty"`
-	Output               interface{}            `json:"output,omitempty"`
 	ModelParameters      map[string]interface{} `json:"modelParameters,omitempty"`
 	CompletionStartTime  *time.Time             `json:"completionStartTime,omitempty"`
 	CreatedAt            time.Time              `json:"createdAt"`
@@ -107,31 +107,32 @@ type TreeObservation struct {
 	Usage                map[string]interface{} `json:"usage,omitempty"`
 }
 
-// TraceWithObservations represents the JSON payload with flat observations
-type TraceWithObservations struct {
-	ID           string                 `json:"id"`
-	ProjectID    string                 `json:"projectId"`
-	Name         string                 `json:"name"`
-	Timestamp    time.Time              `json:"timestamp"`
-	Environment  string                 `json:"environment,omitempty"`
-	Tags         []string               `json:"tags,omitempty"`
-	Bookmarked   bool                   `json:"bookmarked,omitempty"`
-	Release      *string                `json:"release,omitempty"`
-	Version      *string                `json:"version,omitempty"`
-	UserID       string                 `json:"userId,omitempty"`
-	SessionID    string                 `json:"sessionId,omitempty"`
-	Public       bool                   `json:"public,omitempty"`
-	Input        interface{}            `json:"input,omitempty"`
-	Output       interface{}            `json:"output,omitempty"`
-	Metadata     map[string]interface{} `json:"metadata,omitempty"`
-	CreatedAt    time.Time              `json:"createdAt"`
-	UpdatedAt    time.Time              `json:"updatedAt"`
-	ExternalID   interface{}            `json:"externalId,omitempty"`
-	Scores       []interface{}          `json:"scores,omitempty"`
-	Latency      float64                `json:"latency,omitempty"`
-	Observations []*TreeObservation     `json:"observations,omitempty"`
-	HtmlPath     string                 `json:"htmlPath,omitempty"`
-	TotalCost    float64                `json:"totalCost,omitempty"`
+// CompactTrace represents the JSON payload with flat observations.
+// Uses CompactObservation to reduce memory allocation for large trace payloads.
+type CompactTrace struct {
+	ID           string                  `json:"id"`
+	ProjectID    string                  `json:"projectId"`
+	Name         string                  `json:"name"`
+	Timestamp    time.Time               `json:"timestamp"`
+	Environment  string                  `json:"environment,omitempty"`
+	Tags         []string                `json:"tags,omitempty"`
+	Bookmarked   bool                    `json:"bookmarked,omitempty"`
+	Release      *string                 `json:"release,omitempty"`
+	Version      *string                 `json:"version,omitempty"`
+	UserID       string                  `json:"userId,omitempty"`
+	SessionID    string                  `json:"sessionId,omitempty"`
+	Public       bool                    `json:"public,omitempty"`
+	Input        interface{}             `json:"input,omitempty"`
+	Output       interface{}             `json:"output,omitempty"`
+	Metadata     map[string]interface{}  `json:"metadata,omitempty"`
+	CreatedAt    time.Time               `json:"createdAt"`
+	UpdatedAt    time.Time               `json:"updatedAt"`
+	ExternalID   interface{}             `json:"externalId,omitempty"`
+	Scores       []interface{}           `json:"scores,omitempty"`
+	Latency      float64                 `json:"latency,omitempty"`
+	Observations []*CompactObservation   `json:"observations,omitempty"`
+	HtmlPath     string                  `json:"htmlPath,omitempty"`
+	TotalCost    float64                 `json:"totalCost,omitempty"`
 }
 
 // ObservationNode represents a node in the trace tree structure
@@ -205,7 +206,7 @@ type TraceTree struct {
 }
 
 // buildObservationTree converts flat observations to a tree structure
-func buildObservationTree(observations []*TreeObservation) []*ObservationNode {
+func buildObservationTree(observations []*CompactObservation) []*ObservationNode {
 	idToNodes := make(map[string][]*ObservationNode)
 	for _, observation := range observations {
 		node := &ObservationNode{
@@ -221,8 +222,6 @@ func buildObservationTree(observations []*TreeObservation) []*ObservationNode {
 			Level:                observation.Level,
 			StatusMessage:        observation.StatusMessage,
 			Version:              observation.Version,
-			Input:                observation.Input,
-			Output:               observation.Output,
 			ModelParameters:      observation.ModelParameters,
 			CostDetails:          observation.CostDetails,
 			Model:                observation.Model,
@@ -290,8 +289,8 @@ func buildObservationTree(observations []*TreeObservation) []*ObservationNode {
 	return rootResults
 }
 
-// ToTraceTree converts TraceWithObservations to TraceTree
-func (t *TraceWithObservations) ToTraceTree() *TraceTree {
+// ToTraceTree converts CompactTrace to TraceTree
+func (t *CompactTrace) ToTraceTree() *TraceTree {
 	nodes := buildObservationTree(t.Observations)
 	return &TraceTree{
 		ID:          t.ID,
