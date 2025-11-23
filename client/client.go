@@ -7,6 +7,7 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"net/http"
 
 	"github.com/rohitkeshwani07/langfuse-go/annotations"
@@ -101,32 +102,34 @@ func (c *Client) GetProjects(ctx context.Context) (*types.Projects, error) {
 //
 // Returns:
 //   - A 32-character lowercase hexadecimal string representing the Langfuse trace ID.
+//   - An error if random ID generation fails (extremely unlikely).
 //
 // Example:
 //
 //	// Generate a random trace ID
-//	traceID := client.CreateTraceID("")
+//	traceID, err := client.CreateTraceID("")
+//	if err != nil {
+//	    // handle error
+//	}
 //
 //	// Generate a deterministic ID based on a seed
-//	sessionTraceID := client.CreateTraceID("session-456")
+//	sessionTraceID, _ := client.CreateTraceID("session-456")
 //
 //	// Correlate an external ID with a Langfuse trace ID
 //	externalID := "external-system-123456"
-//	correlatedTraceID := client.CreateTraceID(externalID)
-func (c *Client) CreateTraceID(seed string) string {
+//	correlatedTraceID, _ := client.CreateTraceID(externalID)
+func (c *Client) CreateTraceID(seed string) (string, error) {
 	if seed == "" {
 		// Generate a random 16-byte trace ID
 		traceIDBytes := make([]byte, 16)
 		_, err := rand.Read(traceIDBytes)
 		if err != nil {
-			// In the unlikely event of a random generation failure,
-			// fall back to a deterministic approach based on current time
-			panic("failed to generate random trace ID: " + err.Error())
+			return "", fmt.Errorf("failed to generate random trace ID: %w", err)
 		}
-		return hex.EncodeToString(traceIDBytes)
+		return hex.EncodeToString(traceIDBytes), nil
 	}
 
 	// Generate deterministic ID based on seed
 	hash := sha256.Sum256([]byte(seed))
-	return hex.EncodeToString(hash[:16])
+	return hex.EncodeToString(hash[:16]), nil
 }

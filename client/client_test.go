@@ -8,8 +8,14 @@ func TestCreateTraceID(t *testing.T) {
 	client := &Client{}
 
 	t.Run("generates random trace ID", func(t *testing.T) {
-		traceID1 := client.CreateTraceID("")
-		traceID2 := client.CreateTraceID("")
+		traceID1, err := client.CreateTraceID("")
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		traceID2, err := client.CreateTraceID("")
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
 
 		// Verify length (32 hex characters)
 		if len(traceID1) != 32 {
@@ -34,8 +40,14 @@ func TestCreateTraceID(t *testing.T) {
 
 	t.Run("generates deterministic trace ID from seed", func(t *testing.T) {
 		seed := "test-seed-123"
-		traceID1 := client.CreateTraceID(seed)
-		traceID2 := client.CreateTraceID(seed)
+		traceID1, err := client.CreateTraceID(seed)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		traceID2, err := client.CreateTraceID(seed)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
 
 		// Verify length (32 hex characters)
 		if len(traceID1) != 32 {
@@ -56,8 +68,14 @@ func TestCreateTraceID(t *testing.T) {
 	})
 
 	t.Run("different seeds produce different IDs", func(t *testing.T) {
-		traceID1 := client.CreateTraceID("seed1")
-		traceID2 := client.CreateTraceID("seed2")
+		traceID1, err := client.CreateTraceID("seed1")
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		traceID2, err := client.CreateTraceID("seed2")
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
 
 		if traceID1 == traceID2 {
 			t.Error("expected different trace IDs for different seeds")
@@ -67,7 +85,10 @@ func TestCreateTraceID(t *testing.T) {
 	t.Run("matches expected format for known seed", func(t *testing.T) {
 		// This test verifies the deterministic behavior matches the expected SHA256 hash
 		seed := "session-456"
-		traceID := client.CreateTraceID(seed)
+		traceID, err := client.CreateTraceID(seed)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
 
 		// The trace ID should be the first 16 bytes (32 hex chars) of SHA256(seed)
 		// We can verify the length and format
@@ -76,7 +97,11 @@ func TestCreateTraceID(t *testing.T) {
 		}
 
 		// Verify consistency
-		if traceID != client.CreateTraceID(seed) {
+		traceID2, err := client.CreateTraceID(seed)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if traceID != traceID2 {
 			t.Error("trace ID is not consistent for the same seed")
 		}
 	})
