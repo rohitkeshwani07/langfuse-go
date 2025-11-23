@@ -4,6 +4,9 @@ package client
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/hex"
 	"net/http"
 
 	"github.com/rohitkeshwani07/langfuse-go/annotations"
@@ -78,4 +81,52 @@ func (c *Client) GetProjects(ctx context.Context) (*types.Projects, error) {
 		return nil, err
 	}
 	return &response, nil
+}
+
+// CreateTraceID generates a unique trace ID for use with Langfuse.
+//
+// This function generates a unique trace ID for use with various Langfuse APIs.
+// It can either generate a random ID or create a deterministic ID based on
+// a seed string.
+//
+// Trace IDs must be 32 lowercase hexadecimal characters, representing 16 bytes.
+// This function ensures the generated ID meets this requirement. If you need to
+// correlate an external ID with a Langfuse trace ID, use the external ID as the
+// seed to get a valid, deterministic Langfuse trace ID.
+//
+// Parameters:
+//   - seed: Optional string to use as a seed for deterministic ID generation.
+//     If provided, the same seed will always produce the same ID.
+//     If empty, a random ID will be generated.
+//
+// Returns:
+//   - A 32-character lowercase hexadecimal string representing the Langfuse trace ID.
+//
+// Example:
+//
+//	// Generate a random trace ID
+//	traceID := client.CreateTraceID("")
+//
+//	// Generate a deterministic ID based on a seed
+//	sessionTraceID := client.CreateTraceID("session-456")
+//
+//	// Correlate an external ID with a Langfuse trace ID
+//	externalID := "external-system-123456"
+//	correlatedTraceID := client.CreateTraceID(externalID)
+func (c *Client) CreateTraceID(seed string) string {
+	if seed == "" {
+		// Generate a random 16-byte trace ID
+		traceIDBytes := make([]byte, 16)
+		_, err := rand.Read(traceIDBytes)
+		if err != nil {
+			// In the unlikely event of a random generation failure,
+			// fall back to a deterministic approach based on current time
+			panic("failed to generate random trace ID: " + err.Error())
+		}
+		return hex.EncodeToString(traceIDBytes)
+	}
+
+	// Generate deterministic ID based on seed
+	hash := sha256.Sum256([]byte(seed))
+	return hex.EncodeToString(hash[:16])
 }
