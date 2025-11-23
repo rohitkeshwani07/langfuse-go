@@ -1,18 +1,16 @@
-package client
+package langfuse
 
 import (
 	"testing"
 )
 
 func TestCreateTraceID(t *testing.T) {
-	client := &Client{}
-
 	t.Run("generates random trace ID", func(t *testing.T) {
-		traceID1, err := client.CreateTraceID("")
+		traceID1, err := CreateTraceID("")
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
-		traceID2, err := client.CreateTraceID("")
+		traceID2, err := CreateTraceID("")
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -40,11 +38,11 @@ func TestCreateTraceID(t *testing.T) {
 
 	t.Run("generates deterministic trace ID from seed", func(t *testing.T) {
 		seed := "test-seed-123"
-		traceID1, err := client.CreateTraceID(seed)
+		traceID1, err := CreateTraceID(seed)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
-		traceID2, err := client.CreateTraceID(seed)
+		traceID2, err := CreateTraceID(seed)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -68,11 +66,11 @@ func TestCreateTraceID(t *testing.T) {
 	})
 
 	t.Run("different seeds produce different IDs", func(t *testing.T) {
-		traceID1, err := client.CreateTraceID("seed1")
+		traceID1, err := CreateTraceID("seed1")
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
-		traceID2, err := client.CreateTraceID("seed2")
+		traceID2, err := CreateTraceID("seed2")
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -85,7 +83,7 @@ func TestCreateTraceID(t *testing.T) {
 	t.Run("matches expected format for known seed", func(t *testing.T) {
 		// This test verifies the deterministic behavior matches the expected SHA256 hash
 		seed := "session-456"
-		traceID, err := client.CreateTraceID(seed)
+		traceID, err := CreateTraceID(seed)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -97,7 +95,7 @@ func TestCreateTraceID(t *testing.T) {
 		}
 
 		// Verify consistency
-		traceID2, err := client.CreateTraceID(seed)
+		traceID2, err := CreateTraceID(seed)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
