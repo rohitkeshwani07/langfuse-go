@@ -110,29 +110,29 @@ type CompactObservation struct {
 // CompactTrace represents the JSON payload with flat observations.
 // Uses CompactObservation to reduce memory allocation for large trace payloads.
 type CompactTrace struct {
-	ID           string                  `json:"id"`
-	ProjectID    string                  `json:"projectId"`
-	Name         string                  `json:"name"`
-	Timestamp    time.Time               `json:"timestamp"`
-	Environment  string                  `json:"environment,omitempty"`
-	Tags         []string                `json:"tags,omitempty"`
-	Bookmarked   bool                    `json:"bookmarked,omitempty"`
-	Release      *string                 `json:"release,omitempty"`
-	Version      *string                 `json:"version,omitempty"`
-	UserID       string                  `json:"userId,omitempty"`
-	SessionID    string                  `json:"sessionId,omitempty"`
-	Public       bool                    `json:"public,omitempty"`
-	Input        interface{}             `json:"input,omitempty"`
-	Output       interface{}             `json:"output,omitempty"`
-	Metadata     map[string]interface{}  `json:"metadata,omitempty"`
-	CreatedAt    time.Time               `json:"createdAt"`
-	UpdatedAt    time.Time               `json:"updatedAt"`
-	ExternalID   interface{}             `json:"externalId,omitempty"`
-	Scores       []interface{}           `json:"scores,omitempty"`
-	Latency      float64                 `json:"latency,omitempty"`
-	Observations []*CompactObservation   `json:"observations,omitempty"`
-	HtmlPath     string                  `json:"htmlPath,omitempty"`
-	TotalCost    float64                 `json:"totalCost,omitempty"`
+	ID           string                 `json:"id"`
+	ProjectID    string                 `json:"projectId"`
+	Name         string                 `json:"name"`
+	Timestamp    time.Time              `json:"timestamp"`
+	Environment  string                 `json:"environment,omitempty"`
+	Tags         []string               `json:"tags,omitempty"`
+	Bookmarked   bool                   `json:"bookmarked,omitempty"`
+	Release      *string                `json:"release,omitempty"`
+	Version      *string                `json:"version,omitempty"`
+	UserID       string                 `json:"userId,omitempty"`
+	SessionID    string                 `json:"sessionId,omitempty"`
+	Public       bool                   `json:"public,omitempty"`
+	Input        interface{}            `json:"input,omitempty"`
+	Output       interface{}            `json:"output,omitempty"`
+	Metadata     map[string]interface{} `json:"metadata,omitempty"`
+	CreatedAt    time.Time              `json:"createdAt"`
+	UpdatedAt    time.Time              `json:"updatedAt"`
+	ExternalID   interface{}            `json:"externalId,omitempty"`
+	Scores       []interface{}          `json:"scores,omitempty"`
+	Latency      float64                `json:"latency,omitempty"`
+	Observations []*CompactObservation  `json:"observations,omitempty"`
+	HtmlPath     string                 `json:"htmlPath,omitempty"`
+	TotalCost    float64                `json:"totalCost,omitempty"`
 }
 
 // ObservationNode represents a node in the trace tree structure.
@@ -207,6 +207,12 @@ type TraceTree struct {
 
 // buildObservationTree converts flat observations to a tree structure
 func buildObservationTree(observations []*CompactObservation) []*ObservationNode {
+	// First pass: build a set of all valid observation IDs
+	validIDs := make(map[string]bool)
+	for _, observation := range observations {
+		validIDs[observation.ID] = true
+	}
+
 	idToNodes := make(map[string][]*ObservationNode)
 	for _, observation := range observations {
 		node := &ObservationNode{
@@ -248,7 +254,8 @@ func buildObservationTree(observations []*CompactObservation) []*ObservationNode
 			CompletionStartTime:  observation.CompletionStartTime,
 		}
 
-		if observation.ParentObservationID == "" {
+		// Treat as root if ParentObservationID is empty OR if the parent doesn't exist in the observation set
+		if observation.ParentObservationID == "" || !validIDs[observation.ParentObservationID] {
 			idToNodes["root"] = append(idToNodes["root"], node)
 		} else {
 			idToNodes[observation.ParentObservationID] = append(idToNodes[observation.ParentObservationID], node)
