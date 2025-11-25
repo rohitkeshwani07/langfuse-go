@@ -48,7 +48,7 @@ func (c *Client) Update(ctx context.Context, traceID string, req *UpdateTraceReq
 
 // GetTree retrieves a trace by ID with observations in a tree structure
 func (c *Client) GetTree(ctx context.Context, traceID string) (*TraceTree, error) {
-	var response CompactTrace
+	var response Trace
 	if err := c.httpClient.DoRequest(ctx, http.MethodGet, "/api/public/traces/"+url.PathEscape(traceID), nil, &response); err != nil {
 		return nil, err
 	}
